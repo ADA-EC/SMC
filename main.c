@@ -26,18 +26,13 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include "lcd.h"
+#include "bluetooth.h"
 
 #include "ds18b20/ds18b20.h"
-
-#define UART_BAUD_RATE 2400
-#include "uart/uart.h"
 
 int main(void) {
 	char printbuff[100];
 	double d = 0;
-
-	//init uart
-	uart_init( UART_BAUD_SELECT(UART_BAUD_RATE,F_CPU) );
 
     lcd_init();
 
@@ -45,8 +40,19 @@ int main(void) {
 	sendInst(_LCD_CLR);
 	sendInst(_LCD_HOME);
 
+    uart_init(38400, 1);
+
 	//init interrupt
 	sei();
+
+    uart_print("AT+NAME=BLUES\r\n");
+    _delay_ms(1000);
+
+    uart_print("AT+PSWD=0000\r\n");
+    _delay_ms(1000);
+
+    uart_print("AT+UART=38400,1,0\r\n");
+    _delay_ms(1000);
 
 	while(1) {
 		double temp;
@@ -54,10 +60,14 @@ int main(void) {
 
         temp = ds18b20_gettemp();
 
-		dtostrf(temp, 10, 3, printbuff);
-
+		dtostrf(temp, 6, 3, printbuff);
         writeStringXY(printbuff, 0, 0);
-		_delay_ms(100);
+
+        printbuff[6] = '\r';
+        printbuff[7] = '\n';
+        printbuff[8] = '\0';
+
+        uart_print(printbuff);
 	}
 
 	return 0;
