@@ -1,6 +1,12 @@
+/*
+ * Code adapted from https://abratukhin.blogspot.com.br/2015/04/connect-atmega328-with-hc-05-zs-040.html
+ * Author: Andrey Bratukhin
+ * No licence
+ */
+
 #include "bluetooth.h"
 
-void uart_init(uint32_t baudrate, uint8_t double_speed) {
+void bluetooth_init(uint32_t baudrate, uint8_t double_speed) {
     uint16_t ubrr = 0;
     if (double_speed) {
         UCSR0A = _BV(U2X0);  //Enable 2x speed
@@ -21,15 +27,15 @@ void uart_init(uint32_t baudrate, uint8_t double_speed) {
 }
 
 
-uint8_t uart_getchar() {
+uint8_t bluetooth_getchar() {
    loop_until_bit_is_set(UCSR0A, RXC0);
    return UDR0;
 }
 
-void uart_read_line(uint8_t *value, uint8_t size) {
+void bluetooth_read_line(uint8_t *value, uint8_t size) {
     uint8_t i;
     for (i = 0; i < size; i++) {
-        value[i] = uart_getchar();
+        value[i] = bluetooth_getchar();
         if (value[i] == '\r') {
             value[i] = '\0';
             break;
@@ -37,13 +43,13 @@ void uart_read_line(uint8_t *value, uint8_t size) {
     }
 }
 
-void uart_putchar(const uint8_t data) {
+void bluetooth_putchar(const uint8_t data) {
     loop_until_bit_is_set(UCSR0A, UDRE0);
     UDR0 = data;
 }
 
-void uart_print(const char *value) {
+void bluetooth_print(const char *value) {
     while (*value != '\0') {
-        uart_putchar(*value++);
+        bluetooth_putchar(*value++);
     }
 }
