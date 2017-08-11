@@ -27,47 +27,46 @@
 #include <util/delay.h>
 #include "lcd.h"
 #include "bluetooth.h"
-
 #include "ds18b20/ds18b20.h"
 
 int main(void) {
 	char printbuff[100];
 	double d = 0;
 
-    lcd_init();
-
-	sendInst(_LCD_ON | _LCD_CURSOR_ON | _LCD_CURSOR_BLINK);
-	sendInst(_LCD_CLR);
-	sendInst(_LCD_HOME);
-
-    uart_init(38400, 1);
+    bluetooth_init(38400, 1);
 
 	//init interrupt
 	sei();
 
-    uart_print("AT+NAME=BLUES\r\n");
+    //Troca nome transmitido pelo modulo para BLUES
+    bluetooth_print("AT+NAME=BLUES\r\n");
     _delay_ms(1000);
 
-    uart_print("AT+PSWD=0000\r\n");
+    //Troca o pin de pareamento para 0000
+    bluetooth_print("AT+PSWD=0000\r\n");
     _delay_ms(1000);
 
-    uart_print("AT+UART=38400,1,0\r\n");
+    //Define o baud rate
+    bluetooth_print("AT+UART=38400,1,0\r\n");
     _delay_ms(1000);
 
 	while(1) {
 		double temp;
         char printbuff[21];
 
+        //Le tempetarua do sensor    
         temp = ds18b20_gettemp();
 
+        //Converte float para string e coloca no buffer
 		dtostrf(temp, 6, 3, printbuff);
-        writeStringXY(printbuff, 0, 0);
 
+        //Arruma buffer para imprimir bonito no terminal bluetooth
         printbuff[6] = '\r';
         printbuff[7] = '\n';
         printbuff[8] = '\0';
 
-        uart_print(printbuff);
+        //Transmite buffer
+        bluetooth_print(printbuff);
 	}
 
 	return 0;
