@@ -15,16 +15,23 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.UUID;
 import java.util.jar.Manifest;
 
 public class NewActivity4 extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private static final String TAG = "My Activity";
     BluetoothAdapter mBluetoothAdapter;
+    BluetoothConnectionService mBluetoothConnection;
+    private static final UUID MY_UUID_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
+    BluetoothDevice mBTDevice;
+    EditText etSend;
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
     public DeviceListAdapter mDeviceListAdapter;
     ListView NewDevices;
@@ -114,6 +121,8 @@ public class NewActivity4 extends AppCompatActivity implements AdapterView.OnIte
                 //case 1: bonded already
                 if (mDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
                     Log.d(TAG, "onReceive: BOND_BONDED.");
+                    //inside BroadcastReceiver4
+                    mBTDevice = mDevice;
                 }
                 //case 2: creating a bond
                 if (mDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
@@ -143,7 +152,10 @@ public class NewActivity4 extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_new4);
         Button btnONOFF = (Button) findViewById(R.id.button1);
         Button btnEnableDisable_Discoverable = (Button) findViewById(R.id.button2);
-        Button dicover = (Button) findViewById(R.id.button3);
+        Button discover = (Button) findViewById(R.id.button3);
+        Button btnStartConnection = (Button) findViewById(R.id.button4);
+        Button btnSend = (Button) findViewById(R.id.button5);
+        etSend = (EditText) findViewById(R.id.editText3);
         NewDevices = (ListView) findViewById(R.id.NewDevices);
         mBTDevices = new ArrayList<>();
 
@@ -170,7 +182,7 @@ public class NewActivity4 extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-        dicover.setOnClickListener(new View.OnClickListener(){
+        discover.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 Log.d(TAG, "onClick: Discover.");
@@ -178,7 +190,34 @@ public class NewActivity4 extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+        btnStartConnection.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Log.d(TAG, "onClick: Start Connection.");
+                startConnection();
+            }
+        });
 
+        btnSend.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Log.d(TAG, "onClick: Send.");
+                byte[] bytes = etSend.getText().toString().getBytes(Charset.defaultCharset());
+                mBluetoothConnection.write(bytes);
+            }
+        });
+
+
+    }
+
+    public void startConnection(){
+        startBTConnection(mBTDevice, MY_UUID_INSECURE);
+    }
+
+    public void startBTConnection(BluetoothDevice device, UUID uuid){
+        Log.d(TAG, "startBTConnection: Initializing RFCOM Bluetooth Connection.");
+
+        mBluetoothConnection.startClient(device, uuid);
     }
 
 
@@ -262,6 +301,8 @@ public class NewActivity4 extends AppCompatActivity implements AdapterView.OnIte
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
             Log.d(TAG, "Trying to pair with " + deviceName);
             mBTDevices.get(position).createBond();
+            mBTDevice = mBTDevices.get(position);
+            mBluetoothConnection = new BluetoothConnectionService(NewActivity4.this);
         }
     }
 }
