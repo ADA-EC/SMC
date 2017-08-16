@@ -6,7 +6,9 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.Intent;
 import android.nfc.Tag;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.io.IOException;
@@ -224,8 +226,13 @@ public class BluetoothConnectionService {
                     bytes = mmInStream.read(buffer);
                     String incomingMessage = new String(buffer, 0, bytes);
                     Log.d(TAG, "InputStream: " + incomingMessage);
+
+                    Intent incomingMessageIntent = new Intent("incomingMessage");
+                    incomingMessageIntent.putExtra("theMessage", incomingMessage);
+                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(incomingMessageIntent);
+
                 } catch (IOException e) {
-                    Log.e(TAG, "write: Error reading in putstream. " + e.getMessage());
+                    Log.e(TAG, "write: Error reading input stream. " + e.getMessage());
                     break;
                 }
 
@@ -234,7 +241,7 @@ public class BluetoothConnectionService {
         //call from the main activity to send data to the remote device
         public void write(byte[] bytes){
             String text = new String(bytes, Charset.defaultCharset());
-            Log.d(TAG, "write: Writting to outputstream: " + text);
+            Log.d(TAG, "write: Writing to output stream: " + text);
             try {
                 mmOutStream.write(bytes);
             } catch (IOException e) {
