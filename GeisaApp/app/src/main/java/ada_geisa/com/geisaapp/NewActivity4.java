@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -49,16 +50,16 @@ public class NewActivity4 extends AppCompatActivity implements AdapterView.OnIte
 
                 switch (state){
                     case BluetoothAdapter.STATE_OFF:
-                        Log.d(TAG, "onReceive1: STATE OFF");
+                        Toast.makeText(getApplicationContext(), "Bluetooth Desligado", Toast.LENGTH_LONG).show();
                         break;
                     case BluetoothAdapter.STATE_TURNING_OFF:
-                        Log.d(TAG, "mReceiver1: STATE TURNING OFF");
+                        Toast.makeText(getApplicationContext(), "Desligando Bluetooth", Toast.LENGTH_LONG).show();
                         break;
                     case BluetoothAdapter.STATE_ON:
-                        Log.d(TAG, "mReceiver1: STATE ON");
+                        Toast.makeText(getApplicationContext(), "Bluetooth Ligado", Toast.LENGTH_LONG).show();
                         break;
                     case BluetoothAdapter.STATE_TURNING_ON:
-                        Log.d(TAG, "mReceiver1: STATE TURNING ON");
+                        Toast.makeText(getApplicationContext(), "Ligando Bluetooth", Toast.LENGTH_LONG).show();
                         break;
                 }
             }
