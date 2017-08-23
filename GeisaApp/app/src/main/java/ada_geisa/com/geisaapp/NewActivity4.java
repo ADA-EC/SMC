@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.nfc.Tag;
 import android.os.Build;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,16 +16,27 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.UUID;
 import java.util.jar.Manifest;
 
 public class NewActivity4 extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private static final String TAG = "My Activity";
     BluetoothAdapter mBluetoothAdapter;
+    BluetoothConnectionService mBluetoothConnection;
+    private static final UUID MY_UUID_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
+    BluetoothDevice mBTDevice;
+    TextView incomingMessages;
+    StringBuilder messages;
+    EditText etSend;
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
     public DeviceListAdapter mDeviceListAdapter;
     ListView NewDevices;
@@ -38,16 +50,16 @@ public class NewActivity4 extends AppCompatActivity implements AdapterView.OnIte
 
                 switch (state){
                     case BluetoothAdapter.STATE_OFF:
-                        Log.d(TAG, "onReceive1: STATE OFF");
+                        Toast.makeText(getApplicationContext(), "Bluetooth Desligado", Toast.LENGTH_LONG).show();
                         break;
                     case BluetoothAdapter.STATE_TURNING_OFF:
-                        Log.d(TAG, "mReceiver1: STATE TURNING OFF");
+                        Toast.makeText(getApplicationContext(), "Desligando Bluetooth", Toast.LENGTH_LONG).show();
                         break;
                     case BluetoothAdapter.STATE_ON:
-                        Log.d(TAG, "mReceiver1: STATE ON");
+                        Toast.makeText(getApplicationContext(), "Bluetooth Ligado", Toast.LENGTH_LONG).show();
                         break;
                     case BluetoothAdapter.STATE_TURNING_ON:
-                        Log.d(TAG, "mReceiver1: STATE TURNING ON");
+                        Toast.makeText(getApplicationContext(), "Ligando Bluetooth", Toast.LENGTH_LONG).show();
                         break;
                 }
             }
@@ -114,6 +126,8 @@ public class NewActivity4 extends AppCompatActivity implements AdapterView.OnIte
                 //case 1: bonded already
                 if (mDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
                     Log.d(TAG, "onReceive: BOND_BONDED.");
+                    //inside BroadcastReceiver4
+                    mBTDevice = mDevice;
                 }
                 //case 2: creating a bond
                 if (mDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
@@ -143,7 +157,13 @@ public class NewActivity4 extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_new4);
         Button btnONOFF = (Button) findViewById(R.id.button1);
         Button btnEnableDisable_Discoverable = (Button) findViewById(R.id.button2);
-        Button dicover = (Button) findViewById(R.id.button3);
+        Button discover = (Button) findViewById(R.id.button3);
+        Button btnStartConnection = (Button) findViewById(R.id.button4);
+        Button btnSend = (Button) findViewById(R.id.button5);
+        etSend = (EditText) findViewById(R.id.editText3);
+        incomingMessages = (TextView) findViewById(R.id.Mensagem);
+        messages = new StringBuilder();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("incomingMessage"));
         NewDevices = (ListView) findViewById(R.id.NewDevices);
         mBTDevices = new ArrayList<>();
 
@@ -170,7 +190,7 @@ public class NewActivity4 extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
-        dicover.setOnClickListener(new View.OnClickListener(){
+        discover.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 Log.d(TAG, "onClick: Discover.");
@@ -178,7 +198,47 @@ public class NewActivity4 extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+        btnStartConnection.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Log.d(TAG, "onClick: Start Connection.");
+                startConnection();
+            }
+        });
 
+        btnSend.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Log.d(TAG, "onClick: Send.");
+                byte[] bytes = etSend.getText().toString().getBytes(Charset.defaultCharset());
+                mBluetoothConnection.write(bytes);
+
+                etSend.setText("");
+            }
+        });
+
+
+    }
+
+    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String text = intent.getStringExtra("theMessage");
+
+            messages.append(text + "\n");
+
+            incomingMessages.setText(messages);
+        }
+    };
+
+    public void startConnection(){
+        startBTConnection(mBTDevice, MY_UUID_INSECURE);
+    }
+
+    public void startBTConnection(BluetoothDevice device, UUID uuid){
+        Log.d(TAG, "startBTConnection: Initializing RFCOM Bluetooth Connection.");
+
+        mBluetoothConnection.startClient(device, uuid);
     }
 
 
@@ -262,6 +322,8 @@ public class NewActivity4 extends AppCompatActivity implements AdapterView.OnIte
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
             Log.d(TAG, "Trying to pair with " + deviceName);
             mBTDevices.get(position).createBond();
+            mBTDevice = mBTDevices.get(position);
+            mBluetoothConnection = new BluetoothConnectionService(NewActivity4.this);
         }
     }
 }
