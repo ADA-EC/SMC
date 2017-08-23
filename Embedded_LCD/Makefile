@@ -26,18 +26,17 @@ CPU_F=8000000
 all: exe
 	avr-objcopy -O ihex -R .eeprom $(NAME).out $(NAME).hex
 exe: obj
-	avr-gcc -mmcu=atmega328p $(NAME).o ds18b20.o lcd.o bluetooth.o -o $(NAME).out
-obj: $(NAME).c ds18b20/ds18b20.c lcd.c bluetooth.c
+	avr-gcc -mmcu=atmega328p $(NAME).o lcd.o rtc.o twi.o twi-lowlevel.o -o $(NAME).out
+obj: $(NAME).c lcd.c
 	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o $(NAME).o $(NAME).c
-	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o ds18b20.o ds18b20/ds18b20.c
 	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o lcd.o lcd.c
-	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o bluetooth.o bluetooth.c
+	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o rtc.o rtc/rtc.c -std=c11
+	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o twi.o rtc/twi.c -std=c11
+	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o twi-lowlevel.o rtc/twi-lowlevel.c -std=c11
 upload: all
 	avrdude -c avrisp -p m328p -P /dev/ttyACM0 -b 19200 -U flash:w:$(NAME).hex
 
-
-
-clear:
-	rm $(NAME)
-	rm $(NAME).o
+clean:
+	rm $(NAME).out
+	rm *.o
 	rm $(NAME).hex

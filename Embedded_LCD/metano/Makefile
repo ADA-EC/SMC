@@ -1,7 +1,7 @@
 #
 # Sistema de Monitoramento de Compostagem
 #
-# Tem como proposito monitorar as leiras do grupo GEISA (USP-SC)
+# Programa para ler sinal analógico e exibir em LCD
 #
 # Copyright (C) 2017 ADA-Projetos em Engenharia de Computacao
 #
@@ -18,20 +18,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Pedro V. B. Jeronymo (pedrovbj@gmail.com)
+# Amador Marcelino de Souza Neto (amador.neto@usp.br)
 #
-NAME=main
+NAME=analogtolcd
 CPU_F=8000000
 
 all: exe
-	avr-objcopy -O ihex -R .eeprom $(NAME).out $(NAME).hex
+	avr-objcopy -O ihex -R .eeprom $(NAME) $(NAME).hex
 exe: obj
-	avr-gcc -mmcu=atmega328p $(NAME).o ds18b20.o lcd.o bluetooth.o -o $(NAME).out
-obj: $(NAME).c ds18b20/ds18b20.c lcd.c bluetooth.c
+	avr-gcc -mmcu=atmega328p $(NAME).o lcd.o -o $(NAME)
+obj: $(NAME).c lcd.c
 	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o $(NAME).o $(NAME).c
-	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o ds18b20.o ds18b20/ds18b20.c
 	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o lcd.o lcd.c
-	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o bluetooth.o bluetooth.c
 upload: all
 	avrdude -c avrisp -p m328p -P /dev/ttyACM0 -b 19200 -U flash:w:$(NAME).hex
 
