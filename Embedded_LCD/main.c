@@ -21,52 +21,46 @@
  * Pedro V. B. Jeronymo (pedrovbj@gmail.com)
  *
  */
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include "lcd.h"
-#include "bluetooth.h"
-#include "ds18b20/ds18b20.h"
+#include "rtc/twi.h"
+#include "rtc/rtc.h"
 
 int main(void) {
-	char printbuff[100];
-	double d = 0;
+    struct tm* t = NULL;
+    char buf[32];
+	uint8_t hour, min, sec;
+    uint8_t input = 0;
 
-    bluetooth_init(38400, 1);
+
+    DDRD &= ~_BV(DDD2); //RTC INT
+
+    lcd_init();
+
+	sendInst(_LCD_ON | _LCD_CURSOR_ON | _LCD_CURSOR_BLINK);
+	sendInst(_LCD_CLR);
+	sendInst(_LCD_HOME);
 
 	//init interrupt
 	sei();
 
-    //Troca nome transmitido pelo modulo para BLUES
-    bluetooth_print("AT+NAME=BLUES\r\n");
-    _delay_ms(1000);
-
-    //Troca o pin de pareamento para 0000
-    bluetooth_print("AT+PSWD=0000\r\n");
-    _delay_ms(1000);
-
-    //Define o baud rate
-    bluetooth_print("AT+UART=38400,1,0\r\n");
-    _delay_ms(1000);
+    twi_init_master();
+	rtc_init();
+	//rtc_set_time_s(19, 8, 0);
 
 	while(1) {
-		double temp;
-        char printbuff[21];
-
-        //Le tempetarua do sensor
-        temp = ds18b20_gettemp();
-
-        //Converte float para string e coloca no buffer
-		dtostrf(temp, 6, 3, printbuff);
-
-        //Arruma buffer para imprimir bonito no terminal bluetooth
-        printbuff[6] = '\r';
-        printbuff[7] = '\n';
-        printbuff[8] = '\0';
-
-        //Transmite buffer
-        bluetooth_print(printbuff);
+        //t = rtc_get_time();
+		//sprintf(buf, "%02d:%02d:%02d", t->hour, t->min, t->sec);
+        //writeStringXY(buf, 0, 0);
+        rtc_set_alarm_s(0, 0, 1);
+        input = (PIND & _BV(PIND2));
+        sprintf(buf, "%d", input);
+        writeStringXY(buf, 0, 0);
+        _delay_ms(100);
 	}
 
 	return 0;
