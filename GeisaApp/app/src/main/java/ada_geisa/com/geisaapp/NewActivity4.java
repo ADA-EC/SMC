@@ -236,7 +236,7 @@ public class NewActivity4 extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void startBTConnection(BluetoothDevice device, UUID uuid){
-        Log.d(TAG, "startBTConnection: Initializing RFCOM Bluetooth Connection.");
+        Toast.makeText(getApplicationContext(), "Inicializando conexão bluetooth RFCOM", Toast.LENGTH_LONG).show();
 
         mBluetoothConnection.startClient(device, uuid);
     }

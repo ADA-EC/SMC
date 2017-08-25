@@ -26,7 +26,7 @@ public class BluetoothConnectionService {
 
     private static final String appName = "GeisaApp";
 
-    private static final UUID MY_UUID_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
+    private static final UUID MY_UUID_INSECURE = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 
     private final BluetoothAdapter mBluetoothAdapter;
     Context mContext;
@@ -226,8 +226,9 @@ public class BluetoothConnectionService {
                     bytes = mmInStream.read(buffer);
                     String incomingMessage = new String(buffer, 0, bytes);
                     Log.d(TAG, "InputStream: " + incomingMessage);
+                    System.out.println(incomingMessage);
 
-                    Intent incomingMessageIntent = new Intent("incomingMessage");
+                    Intent incomingMessageIntent = new Intent(incomingMessage);
                     incomingMessageIntent.putExtra("theMessage", incomingMessage);
                     LocalBroadcastManager.getInstance(mContext).sendBroadcast(incomingMessageIntent);
 
