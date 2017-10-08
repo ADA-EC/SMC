@@ -26,10 +26,9 @@ CPU_F=8000000
 all: exe
 	avr-objcopy -O ihex -R .eeprom $(NAME).out $(NAME).hex
 exe: obj
-	avr-gcc -mmcu=atmega328p $(NAME).o bluetooth.o rtc.o twi.o twi-lowlevel.o -o $(NAME).out
+	avr-gcc -mmcu=atmega328p $(NAME).o rtc.o twi.o twi-lowlevel.o -o $(NAME).out
 obj: $(NAME).c
 	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o $(NAME).o $(NAME).c
-	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o bluetooth.o bluetooth.c
 	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o rtc.o librtc/rtc.c -std=c11
 	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o twi.o librtc/twi.c -std=c11
 	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o twi-lowlevel.o librtc/twi-lowlevel.c -std=c11

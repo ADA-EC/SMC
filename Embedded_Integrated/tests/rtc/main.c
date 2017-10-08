@@ -24,46 +24,49 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include "bluetooth.h"
-#include "librtc/twi.h"
-#include "librtc/rtc.h"
+#include "ds3231/ds3231.h"
 
+// Interrupt 0 handler
 ISR (INT0_vect)
 {
+    PORTC ^= _BV(PORTC3);
 }
 
 int main(void) {
-    struct tm* t = NULL;
-    char buf[32];
-	uint8_t hour, min, sec;
-    uint8_t input = 0;
+    /* Pin configuration */
+    DDRD &= ~_BV(DDD2); // PD2 (PCINT0 pin) is now an input
 
-    DDRD &= ~(1 << DDD2);     // Clear the PD2 pin
-    // PD2 (PCINT0 pin) is now an input
+    PORTD |= _BV(PORTD2); // PD2 is now an input with pull-up enabled
 
-    PORTD |= (1 << PORTD2);    // turn On the Pull-up
-    // PD2 is now an input with pull-up enabled
+    DDRC |= _BV(DDC3); //Set PC3 as output (DEBUG LED)
 
-    DDRD |= _BV(DDC3); //Set PC3 as output
+    /* Interruption setup*/
+    // Set INT0 to trigger on falling edge
+    EICRA &= ~_BV(ISC00);
+    EICRA |= _BV(ISC01);
 
+    EIMSK |= _BV(INT0); // Turns on INT0
 
-    EICRA &= ~(1 << ISC00);
-    EICRA &= ~(1 << ISC01);    // set INT0 to trigger on low
+    /* Setup code */
 
-    EIMSK |= (1 << INT0);     // Turns on INT0
-	
-    // Turns off led at PC3
-    PORTD &= ~_BV(PORTC3);
+    //Turns off DEBUG LED
+    PORTC &= ~_BV(PORTC3);
 
- 	//init interrupt
+    //Interruptions must be enabled to configure RTC
 	sei();
-
+    // RTC
     twi_init_master();
-	rtc_init();
+    rtc_set_time(0,19,07);
+    rtc_SQW_enable(false);
+    rtc_enable_alarm(true);
+    rtc_set_alarm(0b1111, 23, 19, 5);
 
-	while(1) {
+    /* Loop code */
+	while(true) {
+        rtc_check_alarm(); //Clear alarm flag if set
     }
 
 	return 0;

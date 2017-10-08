@@ -546,7 +546,7 @@ void rtc_set_alarm_s(uint8_t hour, uint8_t min, uint8_t sec)
 
 	if (s_is_ds1307) {
 		rtc_set_sram_byte(hour, 0); // hour
-		rtc_set_sram_byte(min,  1); // minute
+		rtc_set_sram_byte(min,  1); // minuteonce_per_sec
 		rtc_set_sram_byte(sec,  2); // second
 	}
 	else {

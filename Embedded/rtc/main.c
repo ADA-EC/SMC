@@ -26,13 +26,13 @@
 #include <string.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include "bluetooth.h"
 #include "librtc/twi.h"
 #include "librtc/rtc.h"
 
 ISR (INT0_vect)
 {
-    PORTD ^= _BV(PORTD3);
+    //Interruption handler
+    PORTC ^= _BV(PORTC3);
 }
 
 int main(void) {
@@ -47,52 +47,25 @@ int main(void) {
     PORTD |= (1 << PORTD2);    // turn On the Pull-up
     // PD2 is now an input with pull-up enabled
 
-    DDRD |= _BV(DDD3); //Set PD3 as output
+    DDRC |= _BV(DDC3); //Set PC3 as output
 
-
-    EICRA |= (1 << ISC00);
-    EICRA |= (1 << ISC01);    // set INT0 to trigger on rising edge
+    // set INT0 to trigger on LOW level
+    EICRA &= ~_BV(ISC00);
+    EICRA &= ~_BV(ISC01);
 
     EIMSK |= (1 << INT0);     // Turns on INT0
-	
-  //  bluetooth_init(38400, 1);
 
+
+    PORTC &= ~_BV(PORTC3);
 	//init interrupt
 	sei();
 
-    //Troca nome transmitido pelo modulo para BLUES
-    bluetooth_print("AT+NAME=BLUES\r\n");
-    _delay_ms(1000);
-
-    //Troca o pin de pareamento para 0000
-    bluetooth_print("AT+PSWD=0000\r\n");
-    _delay_ms(1000);
-
-    //Define o baud rate
-    bluetooth_print("AT+UART=38400,1,0\r\n");
-    _delay_ms(1000);
-
     twi_init_master();
 	rtc_init();
-
-//    sprintf(buf, "%s\r\n", rtc_is_ds1307() ? "ds1307" : "ds3231");
-//    bluetooth_print(buf);
-    
-
-
-//    rtc_set_time_s(13,1,23);
-
-    PORTD &= ~_BV(PORTD3);
-
-    //rtc_SQW_enable(true);
-    //rtc_set_alarm_once_per_sec();
-    
-    //cli();
-
+    rtc_set_time_s(0,0,0);
+    PORTC |= _BV(PORTC3);
 
 	while(1) {
-bluetooth_print("foo\r\n");
-    _delay_ms(1000);
     }
 
 	return 0;
