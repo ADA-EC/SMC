@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Terminal Geisa</string>
+    <string name="action_settings">Settings</string>
+    <string name="DeleteNote">Você tem certeza?</string>
+</resources>
