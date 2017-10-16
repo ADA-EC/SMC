@@ -21,23 +21,20 @@
 # Pedro V. B. Jeronymo (pedrovbj@gmail.com)
 #
 NAME=main
-CFLAGS=-Os -DF_CPU=$(CPU_F) -std=c11
-MICRO=328p
 CPU_F=8000000
-OBJ = main.o ds3231/ds3231.o ds3231/twi.o ds3231/twi-lowlevel.o \
-LowPower/LowPower.o bluetooth/bluetooth.o
 
 all: exe
 	avr-objcopy -O ihex -R .eeprom $(NAME).out $(NAME).hex
-
-exe: $(OBJ)
-	avr-gcc -mmcu=atmega$(MICRO) $(OBJ) -o $(NAME).out
-
-%.o: %.c
-	avr-gcc -c -o $@ $< $(CFLAGS) -mmcu=atmega$(MICRO)
-
+exe: obj
+	avr-gcc -mmcu=atmega328p $(NAME).o bluetooth.o rtc.o twi.o twi-lowlevel.o -o $(NAME).out
+obj: $(NAME).c
+	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o $(NAME).o $(NAME).c
+	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o bluetooth.o bluetooth.c
+	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o rtc.o librtc/rtc.c -std=c11
+	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o twi.o librtc/twi.c -std=c11
+	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o twi-lowlevel.o librtc/twi-lowlevel.c -std=c11
 upload: all
-	avrdude -c avrisp -p m$(MICRO) -P /dev/ttyACM0 -b 19200 -U flash:w:$(NAME).hex
+	avrdude -c avrisp -p m328p -P /dev/ttyACM0 -b 19200 -U flash:w:$(NAME).hex
 
 clean:
 	rm $(NAME).out

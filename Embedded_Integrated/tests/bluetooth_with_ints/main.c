@@ -31,6 +31,8 @@
 #include "ds3231/ds3231.h"
 #include "bluetooth/bluetooth.h"
 
+bool bluetooth_enabled = false;
+
 //(DEBUG)
 void blink_led() {
     int i;
@@ -53,6 +55,7 @@ ISR (INT0_vect, ISR_BLOCK)
 ISR (INT1_vect, ISR_BLOCK)
 {
     blink_led();
+    bluetooth_enabled = true;
 }
 
 int main(void) {
@@ -66,13 +69,13 @@ int main(void) {
     DDRC |= _BV(DDC3); //Set PC3 as output (DEBUG LED)
 
     /* Interruption setup*/
-    // Set INT0 to trigger on low level
+    // Set INT0 to trigger on falling edge
     EICRA &= ~_BV(ISC00);
     EICRA |= _BV(ISC01);
 
-    // Set INT1 to trigger on low level
+    // Set INT1 to trigger on falling edge
     EICRA &= ~_BV(ISC10);
-    EICRA &= ~_BV(ISC11);
+    EICRA |= _BV(ISC11);
 
     EIMSK |= _BV(INT0); // Turns on INT0
     EIMSK |= _BV(INT1); // Turns on INT1
@@ -105,7 +108,24 @@ int main(void) {
         // Disable interrupts
         cli();
 
-        // Read sensors
+        // Read sensors or Bluetooth Com
+        if (bluetooth_enabled) {
+            PORTC |= _BV(PORTC3);
+
+            //Init bluetooth
+            bluetooth_init(38400, 1);
+        }
+        while(bluetooth_enabled) {
+            if(PIND & _BV(PIND3)) {
+                PORTC &= ~_BV(PORTC3);
+                bluetooth_enabled = false;
+                _delay_ms(3000);
+                break;
+            }
+            bluetooth_print("Beep!\r\n");
+            _delay_ms(1000);
+        }
+
     }
 
 	return 0;

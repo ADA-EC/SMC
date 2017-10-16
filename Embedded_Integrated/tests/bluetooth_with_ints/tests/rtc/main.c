@@ -27,85 +27,46 @@
 #include <stdbool.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include "LowPower/LowPower.h"
 #include "ds3231/ds3231.h"
-#include "bluetooth/bluetooth.h"
-
-//(DEBUG)
-void blink_led() {
-    int i;
-    for (i = 0; i < 5; i++) {
-        PORTC |= _BV(PORTC3);
-        _delay_ms(200);
-        PORTC &= ~_BV(PORTC3);
-        _delay_ms(200);
-    }
-}
 
 // Interrupt 0 handler
-ISR (INT0_vect, ISR_BLOCK)
+ISR (INT0_vect)
 {
-    blink_led();
-    blink_led();
-}
-
-// Interrupt 1 handler
-ISR (INT1_vect, ISR_BLOCK)
-{
-    blink_led();
+    PORTC ^= _BV(PORTC3);
 }
 
 int main(void) {
     /* Pin configuration */
     DDRD &= ~_BV(DDD2); // PD2 (PCINT0 pin) is now an input
-    DDRD &= ~_BV(DDD3); // PD3 (PCINT1 pin) is now an input
 
-    PORTD |= _BV(PORTD2); // PD3 is now an input with pull-up enabled
-    PORTD |= _BV(PORTD3); // PD3 is now an input with pull-up enabled
+    PORTD |= _BV(PORTD2); // PD2 is now an input with pull-up enabled
 
     DDRC |= _BV(DDC3); //Set PC3 as output (DEBUG LED)
 
     /* Interruption setup*/
-    // Set INT0 to trigger on low level
+    // Set INT0 to trigger on falling edge
     EICRA &= ~_BV(ISC00);
     EICRA |= _BV(ISC01);
 
-    // Set INT1 to trigger on low level
-    EICRA &= ~_BV(ISC10);
-    EICRA &= ~_BV(ISC11);
-
     EIMSK |= _BV(INT0); // Turns on INT0
-    EIMSK |= _BV(INT1); // Turns on INT1
 
     /* Setup code */
 
-    // Turns off led on PC3
+    //Turns off DEBUG LED
     PORTC &= ~_BV(PORTC3);
 
-    // Interruptions must be enabled to configure RTC
+    //Interruptions must be enabled to configure RTC
 	sei();
-    // RTC configuration
+    // RTC
     twi_init_master();
     rtc_set_time(0,19,07);
     rtc_SQW_enable(false);
     rtc_enable_alarm(true);
-    rtc_set_alarm(0b1110, 23, 19, 5);
+    rtc_set_alarm(0b1111, 23, 19, 5);
 
     /* Loop code */
-	while(1) {
-        // Enable interrupts
-        sei();
-
-        // Clear alarm flag
-        rtc_check_alarm();
-
-        // Powers Down ATMEGA
-        powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);
-
-        // Disable interrupts
-        cli();
-
-        // Read sensors
+	while(true) {
+        rtc_check_alarm(); //Clear alarm flag if set
     }
 
 	return 0;

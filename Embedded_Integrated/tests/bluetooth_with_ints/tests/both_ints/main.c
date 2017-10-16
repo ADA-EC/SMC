@@ -29,7 +29,6 @@
 #include <util/delay.h>
 #include "LowPower/LowPower.h"
 #include "ds3231/ds3231.h"
-#include "bluetooth/bluetooth.h"
 
 //(DEBUG)
 void blink_led() {
@@ -105,7 +104,7 @@ int main(void) {
         // Disable interrupts
         cli();
 
-        // Read sensors
+        // Do stuff
     }
 
 	return 0;
