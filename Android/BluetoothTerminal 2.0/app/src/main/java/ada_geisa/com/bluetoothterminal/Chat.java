@@ -62,6 +62,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
             @Override
             public void onClick(View v) {
                 String msg = message.getText().toString();
+                msg.append("\r\n");
                 message.setText("");
                 b.send(msg);
                 Display("Você: "+msg);
