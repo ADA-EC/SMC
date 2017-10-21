@@ -50,15 +50,29 @@ int main(void) {
     _delay_ms(1000);
 
 	while(1) {
-        char data[21];
-        memset(data, 0, 21);
-        bluetooth_read_line(data, 20);
+        #define LEN 100
+        char data[LEN+1];
+        memset(data, 0, LEN+1);
+        bluetooth_read_line(data, LEN);
+
         PORTC |= _BV(PORTC3);
         _delay_ms(1000);
         PORTC &= ~_BV(PORTC3);
         _delay_ms(1000);
-        //_delay_ms(1000);
+
+
+        int i;
+        for(i = 0; i < (LEN+1); i++) {
+            if(data[i] == '\0') {
+                data[i] = '\r';
+                data[i+1] = '\n';
+                data[i+2] = '\0';
+                break;
+            }
+        }
+
         bluetooth_print(data);
+
         PORTC |= _BV(PORTC3);
         _delay_ms(1000);
         PORTC &= ~_BV(PORTC3);
