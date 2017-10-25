@@ -19,13 +19,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Pedro V. B. Jeronymo (pedrovbj@gmail.com)
-# Henrique Andrews (andrews.marques225@gmail.com)
 #
-NAME=main
+NAME=SPIcom
 CFLAGS=-Os -DF_CPU=$(CPU_F) -std=c11
 MICRO=328p
 CPU_F=8000000
-OBJ = main.o bluetooth/bluetooth.o adc0832_alt/adc0832.o
+OBJ = SPIcom.o bluetooth/bluetooth.o
 
 all: exe
 	avr-objcopy -O ihex -R .eeprom $(NAME).out $(NAME).hex

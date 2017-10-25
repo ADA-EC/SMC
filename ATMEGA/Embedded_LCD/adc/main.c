@@ -27,22 +27,29 @@
 #include <util/delay.h>
 #include <string.h>
 #include "adc0832_alt/adc0832.h"
-#include "bluetooth/bluetooth.h"
+#include "lcd/lcd.h"
 
 int main() {
-	bluetooth_init(38400,1);
+    //Inicializa o lcd
+	lcd_init();
+
+	sendInst(_LCD_ON | _LCD_CURSOR_ON | _LCD_CURSOR_BLINK);
+	sendInst(_LCD_CLR);
+	sendInst(_LCD_HOME);
 
     //Inicializa adc0832
     adc0832_init();
 
     uint8_t msb, lsb;
-    char buffer[100];
+    char buffer[20];
     memset(buffer, 0, 20);
     while(1) {
         msb = adc0832_convert(&lsb);
-        sprintf(buffer, "msb: 0x%02x\r\nlsb: 0x%02x\r\ndec: %d\r\n\r\n", msb, lsb, msb);
-        bluetooth_print(buffer);
-        _delay_ms(1000);
+        sprintf(buffer, "0x%02x", msb);
+        writeStringXY(buffer, 0, 0);
+        sprintf(buffer, "0x%02x", lsb);
+        writeStringXY(buffer, 0, 1);
+        _delay_ms(200);
     }
 
     return 0;

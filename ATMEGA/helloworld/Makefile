@@ -19,27 +19,22 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Pedro V. B. Jeronymo (pedrovbj@gmail.com)
-# Henrique Andrews (andrews.marques225@gmail.com)
 #
-NAME=main
-CFLAGS=-Os -DF_CPU=$(CPU_F) -std=c11
-MICRO=328p
+NAME=hello
 CPU_F=8000000
-OBJ = main.o bluetooth/bluetooth.o adc0832_alt/adc0832.o
 
 all: exe
-	avr-objcopy -O ihex -R .eeprom $(NAME).out $(NAME).hex
-
-exe: $(OBJ)
-	avr-gcc -mmcu=atmega$(MICRO) $(OBJ) -o $(NAME).out
-
-%.o: %.c
-	avr-gcc -c -o $@ $< $(CFLAGS) -mmcu=atmega$(MICRO)
-
+	avr-objcopy -O ihex -R .eeprom $(NAME) $(NAME).hex
+exe: obj
+	avr-gcc -mmcu=atmega328p $(NAME).o -o $(NAME)
+obj: $(NAME).c
+	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o $(NAME).o $(NAME).c
 upload: all
-	avrdude -c avrisp -p m$(MICRO) -P /dev/ttyACM0 -b 19200 -U flash:w:$(NAME).hex
+	avrdude -c avrisp -p m328p -P /dev/ttyACM0 -b 19200 -U flash:w:$(NAME).hex
 
-clean:
-	rm $(NAME).out
-	rm *.o
+
+
+clear:
+	rm $(NAME)
+	rm $(NAME).o
 	rm $(NAME).hex
