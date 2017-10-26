@@ -26,20 +26,46 @@
 #include <string.h>
 #include <stdbool.h>
 #include <avr/interrupt.h>
+#include <avr/io.h>
 #include <util/delay.h>
 #include "LowPower/LowPower.h"
 #include "ds3231/ds3231.h"
 #include "bluetooth/bluetooth.h"
+#include "SD/ff.h"
+#include "SD/integer.h"
+
+#define PORTLED PORTB
+#define PINLED  PORTB0
+#define PREPLED() DDRB |= _BV(PINLED)
+#define AcendeLED() PORTLED |= _BV(PINLED)
+#define ApagaLED() PORTLED &= ~_BV(PINLED)
+
+#define TAMANHOLINHA 100
+
+
+FATFS FatFs;		// Área de trabalho do FAtFs 
+FIL *fp;		// Estrutura de File
 
 //(DEBUG)
 void blink_led() {
     int i;
     for (i = 0; i < 5; i++) {
-        PORTC |= _BV(PORTC3);
+        AcendeLED();
         _delay_ms(200);
-        PORTC &= ~_BV(PORTC3);
+        ApagaLED();
         _delay_ms(200);
     }
+}
+
+DWORD get_fattime (void)
+{
+	// Retorna o dia e hora configurado como DWORD
+	return	  ((DWORD)(2017 - 1980) << 25)	// Ano 2017
+	| ((DWORD)10 << 21)				// Mes 10 
+	| ((DWORD)26 << 16)				// Dia 26
+	| ((DWORD)16 << 11)				// Hora 20 (considerando fuso horario 0)
+	| ((DWORD)31 << 5)				// Minuto 0 
+	| ((DWORD)0 >> 1);				// Segundo 0
 }
 
 // Interrupt 0 handler
@@ -56,6 +82,8 @@ ISR (INT1_vect, ISR_BLOCK)
 }
 
 int main(void) {
+    
+   
     /* Pin configuration */
     DDRD &= ~_BV(DDD2); // PD2 (PCINT0 pin) is now an input
     DDRD &= ~_BV(DDD3); // PD3 (PCINT1 pin) is now an input
@@ -63,7 +91,7 @@ int main(void) {
     PORTD |= _BV(PORTD2); // PD3 is now an input with pull-up enabled
     PORTD |= _BV(PORTD3); // PD3 is now an input with pull-up enabled
 
-    DDRC |= _BV(DDC3); //Set PC3 as output (DEBUG LED)
+    PREPLED(); //Set PC3 as output (DEBUG LED)
 
     /* Interruption setup*/
     // Set INT0 to trigger on low level
@@ -106,6 +134,38 @@ int main(void) {
         cli();
 
         // Read sensors
+        double temperatura = 25.2;
+        uint8_t umidade = 50;
+        uint8_t metano = 30;
+                
+        // Write data
+        // inicializa o cartão
+        UINT bw;
+        f_mount(0, &FatFs);		// Monta o cartão e fornece uma area de trabalho FatFs ao modulo
+	
+        // cria o ponteiro fp para referenciar o arquivo a ser aberto
+        fp = (FIL *)malloc(sizeof (FIL));
+        
+        // se o arquivo for aberto, entra na condição
+        if (f_open(fp, "leira1.txt", FA_WRITE | FA_OPEN_ALWAYS) == FR_OK) {	// abre arquivo existente ou cria novo
+        
+            if (f_lseek(fp, f_size(fp)) == FR_OK) { //Entra no if se conseguir posicionar o "cursor" de escrita no final do arquivo
+            
+                char text[TAMANHOLINHA];
+                sprintf(text, "%f,%u,%u\r\n", temperatura, umidade, metano);
+                
+                f_write(fp, text, strlen(text), &bw);	//escreve a string 'text'no arquivo			
+            }	
+            
+            f_close(fp);// fecha o arquivo		
+        }
+        
+        // desmonta o cartão	
+        f_mount(0, &FatFs);
+    
+        
+        
+        
     }
 
 	return 0;

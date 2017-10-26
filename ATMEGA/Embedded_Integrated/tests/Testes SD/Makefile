@@ -20,19 +20,23 @@
 #
 # Pedro V. B. Jeronymo (pedrovbj@gmail.com)
 #
-NAME=SPIcom
-CFLAGS=-Os -DF_CPU=$(CPU_F) -std=c11
+NAME=main
+CFLAGS=-Os -DF_CPU=$(CPU_F) 
 MICRO=328p
 CPU_F=8000000
-OBJ = SPIcom.o bluetooth/bluetooth.o
+OBJ = main.o bluetooth/bluetooth.o
+OBJCPP = SD/ff.o SD/sdmm.o 
 
 all: exe
 	avr-objcopy -O ihex -R .eeprom $(NAME).out $(NAME).hex
 
-exe: $(OBJ)
-	avr-gcc -mmcu=atmega$(MICRO) $(OBJ) -o $(NAME).out
+exe: $(OBJ) $(OBJCPP)
+	avr-gcc -mmcu=atmega$(MICRO) $(OBJCPP) $(OBJ) -o $(NAME).out
 
 %.o: %.c
+	avr-gcc -c -o $@ $< $(CFLAGS) -std=c11 -mmcu=atmega$(MICRO)
+	
+%.o: %.cpp
 	avr-gcc -c -o $@ $< $(CFLAGS) -mmcu=atmega$(MICRO)
 
 upload: all
