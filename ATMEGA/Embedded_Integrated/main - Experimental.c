@@ -49,6 +49,7 @@ FATFS FatFs;		// Área de trabalho do FAtFs
 FIL *fp;		// Estrutura de File
 
 void InicializarSistema();
+int GravarMedicao(int Leira, double temperatura, uint8_t umidade, uint8_t metano);
 int LerArquivoTodoEPassarPorBluetooth(int Leira);
 
 //(DEBUG)
@@ -63,13 +64,17 @@ void blink_led() {
 }
 
 DWORD get_fattime (void)
-{
+{	
+	//Recebe hora, minuto e segundo atuais
+	uint8_t hora, minuto, segundo;
+	rtc_get_time(*hora, *minuto, *segundo);
+		
 	// Retorna o dia e hora configurado como DWORD
 	return	  ((DWORD)(2017 - 1980) << 25)	// Ano 2017
 	| ((DWORD)10 << 21)				// Mes 10 
 	| ((DWORD)26 << 16)				// Dia 26
-	| ((DWORD)16 << 11)				// Hora 20 (considerando fuso horario 0)
-	| ((DWORD)31 << 5)				// Minuto 0 
+	| ((DWORD)hora << 11)				// Hora recebida
+	| ((DWORD)minuto << 5)				// Minuto recebido
 	| ((DWORD)0 >> 1);				// Segundo 0
 }
 
@@ -112,28 +117,7 @@ int main(void) {
                 
         // Write data
         // inicializa o cartão
-        UINT bw;
-        f_mount(0, &FatFs);		// Monta o cartão e fornece uma area de trabalho FatFs ao modulo
-	
-        // cria o ponteiro fp para referenciar o arquivo a ser aberto
-        fp = (FIL *)malloc(sizeof (FIL));
-        
-        // se o arquivo for aberto, entra na condição
-        if (f_open(fp, "leira1.txt", FA_WRITE | FA_OPEN_ALWAYS) == FR_OK) {	// abre arquivo existente ou cria novo
-        
-            if (f_lseek(fp, f_size(fp)) == FR_OK) { //Entra no if se conseguir posicionar o "cursor" de escrita no final do arquivo
-            
-                char text[TAMANHOLINHA];
-                sprintf(text, "%f,%u,%u\r\n", temperatura, umidade, metano);
-                
-                f_write(fp, text, strlen(text), &bw);	//escreve a string 'text'no arquivo			
-            }	
-            
-            f_close(fp);// fecha o arquivo		
-        }
-        
-        // desmonta o cartão	
-        f_mount(0, &FatFs);
+        GravarMedicao(0, temperatura, umidade, metano);
     
         
         
@@ -143,6 +127,7 @@ int main(void) {
 	return 0;
 }
 
+//Inicializa os PORTS, PINS e registradores necessários para funcionamento do sistema
 void InicializarSistema(){
 	
 /* Pin configuration */
@@ -183,6 +168,94 @@ void InicializarSistema(){
 }
 
 
+//Grava no arquivo relativo à leira referenciada as medições feitas e a data e hora atuais
+//Retorna  1 se der certo
+//Retorna  0 se não conseguir montar o cartão SD
+//Retorna -1 se o número de leira passado por argumento é inválido
+//Retorna -2 se não conseguir abrir o arquivo indicado
+//Retorna -3 se falhar em posicionar o cursor no fim do arquivo
+int GravarMedicao(int Leira, double temperatura, uint8_t umidade, uint8_t metano){
+	
+	//Desabilita interrupções
+	cli();
+	
+	FRESULT abriu;
+	char bufferLeitura[BUFFERLEITURA];
+	UINT bw;
+	
+	abriu = f_mount(0, &FatFs);		// Fornece uma area de trabalho FatFs ao modulo
+	
+	if(abriu != FR_OK){
+		sei();	//Habilita interrupções
+		return 0;	// Se não conseguir montar o cartão SD retorna 0
+	}
+	
+	// cria o ponteiro fp para referenciar o arquivo a ser aberto
+	fp = (FIL *)malloc(sizeof (FIL));
+	
+	//Tenta abrir o arquivo da leira desejada
+	if(Leira==0)
+		abriu = f_open(fp, "leira0.csv", FA_WRITE | FA_OPEN_ALWAYS);
+	else if(Leira==1)
+		abriu = f_open(fp, "leira1.csv", FA_WRITE | FA_OPEN_ALWAYS);
+	else if(Leira==2)
+		abriu = f_open(fp, "leira2.csv", FA_WRITE | FA_OPEN_ALWAYS);
+	else if(Leira==3)
+		abriu = f_open(fp, "leira3.csv", FA_WRITE | FA_OPEN_ALWAYS);
+	else{
+		sei();	//Habilita interrupções
+		return -1; //Se tentar acessar um número inválido de leira retorna -1
+	}
+	
+	if(abriu != FR_OK){
+		sei();	//Habilita interrupções
+		return -2; //Se falhar em abrir o arquivo desejado retorna -2
+	}
+	
+	//Se o arquivo aberto está vazio, cria o cabeçalho
+	if(f_size(fp)==0){
+		char cabecalho[50] = "Data, Hora, Temperatura, Umidade, Metano\r\n";	//Define a string de cabeçalho
+		f_write(fp, text, strlen(cabecalho), &bw);	//escreve a string 'text'no arquivo	
+	}
+	
+	//Tenta posicionar o "cursor" de escrita no fim do arquivo
+	abriu = f_lseek(fp, f_size(fp));
+	
+	if(abriu != FR_OK){
+		sei();	//Habilita interrupções
+		return -3; //Se falhar em posicionar o cursor no fim do arquivo retorna -3
+	}
+	
+	//Atribui a temperaturaInteira o valor antes da virgula de temperatura
+	//e atribui a temperaturaDecimal 3 casas depois da virgula
+	uint8_t temperaturaInteira, temperaturaDecimal;
+	temperaturaInteira = temperatura;
+	temperaturaDecimal = (temperatura*1000)%1000;
+	
+	//Pega o horário dado pelo RTC
+	uint8_t hora, minuto, segundo;	
+	rtc_get_time(*hora, *minuto, *segundo);
+	
+	//Coloca na string 'linha' a linha que será gravada no arquivo
+	char linha[TAMANHOLINHA];
+    sprintf(linha, "DD/MM/AA,%u:%u,%u.%u,%u,%u\r\n", hora, minuto, temperaturaInteira, temperaturaDecimal, umidade, metano);
+	
+	//escreve a string 'linha' no arquivo	
+	f_write(fp, linha, strlen(linha), &bw);	
+	
+	f_close(fp);// Fecha o arquivo
+	
+	// desmonta o cartão	
+	f_mount(0, &FatFs);	
+	
+	sei();	//Habilita interrupções
+	
+	return 1; //Retorna 1 indicando o sucesso da operação
+	
+}
+
+
+//OBS: não sei se será responsabilidade dessa função interromper interrupções
 //Le todo o arquivo relativo à leira referenciada e o transmite por bluetooth
 //Retorna  1 se der certo
 //Retorna  0 se não conseguir montar o cartão SD
@@ -208,13 +281,13 @@ int LerArquivoTodoEPassarPorBluetooth(int Leira){
 	
 	//Tenta abrir o arquivo da leira desejada
 	if(Leira==0)
-		abriu = f_open(fp, "leira0.txt", FA_READ);
+		abriu = f_open(fp, "leira0.csv", FA_READ);
 	else if(Leira==1)
-		abriu = f_open(fp, "leira1.txt", FA_READ);
+		abriu = f_open(fp, "leira1.csv", FA_READ);
 	else if(Leira==2)
-		abriu = f_open(fp, "leira2.txt", FA_READ);
+		abriu = f_open(fp, "leira2.csv", FA_READ);
 	else if(Leira==3)
-		abriu = f_open(fp, "leira3.txt", FA_READ);
+		abriu = f_open(fp, "leira3.csv", FA_READ);
 	else{
 		sei();	//Habilita interrupções
 		return -1; //Se tentar acessar um número inválido de leira retorna -1
