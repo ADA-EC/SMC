@@ -35,12 +35,15 @@ int main() {
     //Inicializa adc0832
     adc0832_init();
 
-    uint8_t msb, lsb;
-    char buffer[100];
+    uint8_t msb, lsb, avr;
+	int voltage;
+    char buffer[200];
     memset(buffer, 0, 20);
     while(1) {
         msb = adc0832_convert(&lsb);
-        sprintf(buffer, "msb: 0x%02x\r\nlsb: 0x%02x\r\ndec: %d\r\n\r\n", msb, lsb, msb);
+		avr = adc0832_average_conv(5);
+		voltage = (int)5000*((float)avr/256.0);
+		sprintf(buffer, "msb: 0x%02x\r\nlsb: 0x%02x\r\n%dmV\r\n\r\n", msb, lsb, voltage);
         bluetooth_print(buffer);
         _delay_ms(1000);
     }

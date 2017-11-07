@@ -100,3 +100,18 @@ uint8_t adc0832_convert(uint8_t* lsb_ret) {
     *lsb_ret = lsb;
     return msb;
 }
+
+uint8_t adc0832_average_conv(int num_conv) {
+    int i;
+    uint8_t msb, lsb;
+    float avr = 0;
+
+    for(i = 0; i < num_conv; i++) {
+        msb = adc0832_convert(&lsb);
+        if(msb == lsb) {
+            avr += ((float)msb)/((float)num_conv);
+        }
+        _delay_ms(ADC0832_DELAY_AVR_CONV);
+    }
+    return (uint8_t)avr;
+}

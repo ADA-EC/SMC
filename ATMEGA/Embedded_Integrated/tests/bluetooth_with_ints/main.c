@@ -37,9 +37,9 @@ bool bluetooth_enabled = false;
 void blink_led() {
     int i;
     for (i = 0; i < 5; i++) {
-        PORTC |= _BV(PORTC3);
+        PORTB |= _BV(PORTB0);
         _delay_ms(200);
-        PORTC &= ~_BV(PORTC3);
+        PORTB &= ~_BV(PORTB0);
         _delay_ms(200);
     }
 }
@@ -52,10 +52,18 @@ ISR (INT0_vect, ISR_BLOCK)
 }
 
 // Interrupt 1 handler
-ISR (INT1_vect, ISR_BLOCK)
+ISR (INT1_vect)
 {
-    blink_led();
-    bluetooth_enabled = true;
+    cli();
+    // SREG &= ~0x80;
+    // EIFR |= _BV(INTF1);
+    _delay_ms(300);
+    if (PIND & _BV(PIND3)) {
+        blink_led();
+        bluetooth_enabled = true;
+    } else {
+        bluetooth_enabled = false;
+    }
 }
 
 int main(void) {
@@ -66,15 +74,15 @@ int main(void) {
     PORTD |= _BV(PORTD2); // PD3 is now an input with pull-up enabled
     PORTD |= _BV(PORTD3); // PD3 is now an input with pull-up enabled
 
-    DDRC |= _BV(DDC3); //Set PC3 as output (DEBUG LED)
+    DDRB |= _BV(DDB0); //Set PB0 as output (DEBUG LED)
 
     /* Interruption setup*/
     // Set INT0 to trigger on falling edge
     EICRA &= ~_BV(ISC00);
     EICRA |= _BV(ISC01);
 
-    // Set INT1 to trigger on falling edge
-    EICRA &= ~_BV(ISC10);
+    // Set INT1 to trigger on rising edge
+    EICRA |= _BV(ISC10);
     EICRA |= _BV(ISC11);
 
     EIMSK |= _BV(INT0); // Turns on INT0
@@ -82,8 +90,8 @@ int main(void) {
 
     /* Setup code */
 
-    // Turns off led on PC3
-    PORTC &= ~_BV(PORTC3);
+    // Turns off led on PB0
+    PORTB &= ~_BV(PORTB0);
 
     // Interruptions must be enabled to configure RTC
 	sei();
@@ -110,22 +118,23 @@ int main(void) {
 
         // Read sensors or Bluetooth Com
         if (bluetooth_enabled) {
-            PORTC |= _BV(PORTC3);
+            PORTB |= _BV(PORTB0);
 
             //Init bluetooth
             bluetooth_init(38400, 1);
         }
         while(bluetooth_enabled) {
-            if(PIND & _BV(PIND3)) {
-                PORTC &= ~_BV(PORTC3);
+            if(!(PIND & _BV(PIND3))) {
+                PORTB &= ~_BV(PORTB0);
                 bluetooth_enabled = false;
-                _delay_ms(3000);
+                _delay_ms(300);
+                EIFR |= _BV(INTF0); //Clear interrupt flags
+                EIFR |= _BV(INTF1);
                 break;
             }
             bluetooth_print("Beep!\r\n");
             _delay_ms(1000);
         }
-
     }
 
 	return 0;

@@ -50,6 +50,8 @@
 #define _ADC0832_DELAY_MSB 20
 #define _ADC0832_DELAY_LSB 20
 
+#define ADC0832_DELAY_AVR_CONV 100
+
 /*
 #define _ADC0832_PULSE_WIDTH 95
 #define _ADC0832_DELAY_WRITE 263
@@ -59,5 +61,7 @@
 
 void    adc0832_init();
 uint8_t adc0832_convert(uint8_t* lsb_ret);
+uint8_t adc0832_average_conv(int num_conv);
+
 
 #endif
