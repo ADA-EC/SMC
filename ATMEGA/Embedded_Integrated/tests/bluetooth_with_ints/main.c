@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Pedro V. B. Jeronymo (pedrovbj@gmail.com)
+ * Guilherme Preato (guiprearo@gmail.com)
  *
  */
 #include <stdio.h>
