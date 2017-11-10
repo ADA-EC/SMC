@@ -28,6 +28,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include "ds3231/ds3231.h"
+#include "bluetooth/bluetooth.h"
 
 // Interrupt 0 handler
 ISR (INT0_vect)
@@ -39,16 +40,32 @@ int main(void) {
 
     //Interruptions must be enabled to configure RTC
 	sei();
+    
+    bluetooth_init(38400, 1);
     // RTC
     twi_init_master();
     rtc_set_date_time(0,19,7,8,11,17);
     rtc_SQW_enable(false);
     rtc_enable_alarm(true);
     rtc_set_alarm(0b1111, 23, 19, 5);
+    
+    char linha[15];
+    
+    uint8_t hora, minuto, segundo, dia, mes, ano;
 
     /* Loop code */
 	while(true) {
         rtc_check_alarm(); //Clear alarm flag if set
+        
+        rtc_get_date_time(&hora, &minuto, &segundo, &dia, &mes, &ano);
+        
+        sprintf(linha,"%d:%d:%d  %d/%d/%d\n", hora, minuto, segundo, dia, mes, ano);
+        
+        bluetooth_print(linha);
+        
+        _delay_ms(1000);
+        
+        
     }
 
 	return 0;

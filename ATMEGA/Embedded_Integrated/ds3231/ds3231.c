@@ -105,7 +105,7 @@ void rtc_write_byte(uint8_t b, uint8_t offset)
 	twi_end_transmission();
 }
 
-void rtc_get_time(uint8_t* hour, uint8_t* min, uint8_t* sec)
+void rtc_get_date_time(uint8_t* hour, uint8_t* min, uint8_t* sec, uint8_t *day, uint8_t *month, uint8_t *year)
 {
 	uint8_t rtc[9];
     uint8_t i;
@@ -127,9 +127,13 @@ void rtc_get_time(uint8_t* hour, uint8_t* min, uint8_t* sec)
 	if (sec)  *sec =  bcd2dec(rtc[0]);
 	if (min)  *min =  bcd2dec(rtc[1]);
 	if (hour) *hour = bcd2dec(rtc[2]);
+    //Byte 0x03 is for day of the week
+    if (day)  *day =  bcd2dec(rtc[4]);
+	if (month) *month =  bcd2dec(rtc[5]);
+	if (year) *year = bcd2dec(rtc[6]);
 }
 
-void rtc_set_time(uint8_t hour, uint8_t min, uint8_t sec)
+void rtc_set_date_time(uint8_t hour, uint8_t min, uint8_t sec, uint8_t day, uint8_t month, uint8_t year)
 {
 	twi_begin_transmission(RTC_ADDR);
 	twi_send_byte(0x0);
@@ -137,6 +141,10 @@ void rtc_set_time(uint8_t hour, uint8_t min, uint8_t sec)
 	twi_send_byte(dec2bcd(sec)); // seconds
 	twi_send_byte(dec2bcd(min)); // minutes
 	twi_send_byte(dec2bcd(hour)); // hours
+    twi_send_byte(dec2bcd(0)); // day-of-week
+    twi_send_byte(dec2bcd(day)); // date
+	twi_send_byte(dec2bcd(month)); // month
+	twi_send_byte(dec2bcd(year)); // year
 
 	twi_end_transmission();
 }

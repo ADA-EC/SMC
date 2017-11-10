@@ -27,8 +27,8 @@
 #include <stdbool.h>
 
 // Get/set time
-void rtc_get_time(uint8_t* hour, uint8_t* min, uint8_t* sec);
-void rtc_set_time(uint8_t hour, uint8_t min, uint8_t sec);
+void rtc_get_date_time(uint8_t* hour, uint8_t* min, uint8_t* sec, uint8_t *day, uint8_t *month, uint8_t *year);
+void rtc_set_date_time(uint8_t hour, uint8_t min, uint8_t sec, uint8_t day, uint8_t month, uint8_t year);
 
 // Read Temperature
 void ds3231_get_temp_int(int8_t* i, uint8_t* f);

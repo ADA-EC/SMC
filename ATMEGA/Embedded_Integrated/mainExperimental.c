@@ -65,13 +65,21 @@ void blink_led() {
 
 DWORD get_fattime (void)
 {
+    uint8_t hora, minuto, segundo, dia, mes, ano;
+    
+    sei();
+    
+    rtc_get_date_time(&hora, &minuto, &segundo, &dia, &mes, &ano);
+    
+    cli();
+    
 	// Retorna o dia e hora configurado como DWORD
-	return	  ((DWORD)(2017 - 1980) << 25)	// Ano 2017
-	| ((DWORD)10 << 21)				// Mes 10
-	| ((DWORD)26 << 16)				// Dia 26
-	| ((DWORD)16 << 11)				// Hora 20 (considerando fuso horario 0)
-	| ((DWORD)31 << 5)				// Minuto 0
-	| ((DWORD)0 >> 1);				// Segundo 0
+	return	  ((DWORD)(ano - 1980) << 25)	// Ano 2017
+	| ((DWORD)mes << 21)				// Mes 10
+	| ((DWORD)dia << 16)				// Dia 26
+	| ((DWORD)hora << 11)				// Hora 20 (considerando fuso horario 0)
+	| ((DWORD)minuto << 5)				// Minuto 0
+	| ((DWORD)segundo >> 1);				// Segundo 0
 }
 
 
@@ -107,10 +115,10 @@ int main(void) {
           
         
         int debug;
+                
+        debug = GravarMedicao(0, temperatura, umidade,metano);
         
-        debug = LerArquivoTodoEPassarPorBluetooth(2);
-        
-        if(debug==-2){
+        if(debug!=1){
             AcendeLED();
             _delay_ms(10000);
             ApagaLED();
@@ -163,10 +171,11 @@ void InicializarSistema(){
 	sei();
     // RTC configuration
     twi_init_master();
-    rtc_set_time(0,19,07);
+    //rtc_set_date_time(0,19,7,8,11,17);
     rtc_SQW_enable(false);
     rtc_enable_alarm(true);
     rtc_set_alarm(0b1110, 23, 19, 5);
+
 	
 }
 
@@ -186,6 +195,24 @@ int GravarMedicao(int Leira, double temperatura, uint8_t umidade, uint8_t metano
     //Se o número de leira passado como argumento for inválido, retorna -1
     if(Leira<0 || Leira >3)
         return -1;
+    
+    uint8_t hora, minuto, segundo, dia, mes, ano;
+    
+    AcendeLED();
+    _delay_ms(1000);
+    ApagaLED();
+    _delay_ms(1000);
+    
+    sei();
+    
+    rtc_get_date_time(&hora, &minuto, &segundo, &dia, &mes, &ano);
+    
+    cli();
+    
+    AcendeLED();
+    _delay_ms(1000);
+    ApagaLED();
+    _delay_ms(1000);
     
     // Tenta montar o cartão, se não conseguir retorna 0
 	if(f_mount(0, &FatFs) != FR_OK)
@@ -227,7 +254,7 @@ int GravarMedicao(int Leira, double temperatura, uint8_t umidade, uint8_t metano
             
             //Coloca na string 'linha' a linha que será gravada no arquivo
             char linha[TAMANHOLINHA];
-            sprintf(linha, "DD/MM/AA,HH:MM,%d.%d,%u,%u\r\n", temperaturaInteira, temperaturaDecimal, umidade, metano);
+            sprintf(linha, "%02d/%02d/%02d,%02d:%02d,%d.%d,%u,%u\r\n", dia, mes, ano, hora, minuto, temperaturaInteira, temperaturaDecimal, umidade, metano);
             
             //Pisco longo no LED se foi pra escrita
             AcendeLED();
