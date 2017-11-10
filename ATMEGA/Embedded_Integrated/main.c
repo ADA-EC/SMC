@@ -44,7 +44,10 @@
 #define BUFFERLEITURA 200
 #define TAMANHOLINHA 100
 
+bool bluetooth_enabled = false;
+
 int GravarMedicao(int Leira, double temperatura, uint8_t umidade, uint8_t metano);
+int LerArquivoTodoEPassarPorBluetooth(int Leira);
 
 FATFS FatFs;		// Área de trabalho do FAtFs
 FIL *fp;		// Estrutura de File
@@ -103,7 +106,9 @@ ISR (INT1_vect, ISR_BLOCK)
 
 int main(void) {
 
-
+    int debug;
+    char debugchar[15];
+    
     /* Pin configuration */
     DDRD &= ~_BV(DDD2); // PD2 (PCINT0 pin) is now an input
     DDRD &= ~_BV(DDD3); // PD3 (PCINT1 pin) is now an input
@@ -134,7 +139,7 @@ int main(void) {
 	sei();
     // RTC configuration
     twi_init_master();
-    rtc_set_time(0,19,07);
+    rtc_set_date_time(0,19,7,8,11,17);
     rtc_SQW_enable(false);
     rtc_enable_alarm(true);
     rtc_set_alarm(0b1110, 23, 19, 5);
@@ -168,7 +173,9 @@ int main(void) {
                 EIFR |= _BV(INTF1);
                 break;
             }
-            bluetooth_print("Beep!\r\n");
+            debug = LerArquivoTodoEPassarPorBluetooth(0);
+            sprintf(debugchar, "beep %d\r\n", debug);
+            bluetooth_print(debugchar);
             _delay_ms(1000);
         }
         if(bluetooth_enabled) {
@@ -181,30 +188,11 @@ int main(void) {
         uint8_t umidade = 50;
         uint8_t metano = 30;
 
-        // Write data
-        // inicializa o cartão
-        UINT bw;
-        f_mount(0, &FatFs);		// Monta o cartão e fornece uma area de trabalho FatFs ao modulo
+        GravarMedicao(0, temperatura, umidade, metano);
+        
+        
+        
 
-        // cria o ponteiro fp para referenciar o arquivo a ser aberto
-        fp = (FIL *)malloc(sizeof (FIL));
-
-        // se o arquivo for aberto, entra na condição
-        if (f_open(fp, "leira1.txt", FA_WRITE | FA_OPEN_ALWAYS) == FR_OK) {	// abre arquivo existente ou cria novo
-
-            if (f_lseek(fp, f_size(fp)) == FR_OK) { //Entra no if se conseguir posicionar o "cursor" de escrita no final do arquivo
-
-                char text[TAMANHOLINHA];
-                sprintf(text, "%f,%u,%u\r\n", temperatura, umidade, metano);
-
-                f_write(fp, text, strlen(text), &bw);	//escreve a string 'text'no arquivo
-            }
-
-            f_close(fp);// fecha o arquivo
-        }
-
-        // desmonta o cartão
-        f_mount(0, &FatFs);
     }
 
 	return 0;
@@ -312,6 +300,8 @@ int LerArquivoTodoEPassarPorBluetooth(int Leira){
     if(Leira<0 || Leira >3)
         return -1;
     
+    
+    
     // Tenta montar o cartão, se não conseguir retorna 0
 	if(f_mount(0, &FatFs) != FR_OK)
 		return 0;	
@@ -322,20 +312,12 @@ int LerArquivoTodoEPassarPorBluetooth(int Leira){
     
     //Cria uma string em vai ser armazenada o nome do arquivo a ser aberto
     char nomeArquivo[15];
-    sprintf(nomeArquivo, "leira%d.csv", Leira);
+    sprintf(nomeArquivo, "LEIRA%d.CSV", Leira);
     
     
     // se o arquivo for aberto, entra na condição
     if (f_open(fp, nomeArquivo, FA_READ) == FR_OK) {	// tenta abrir o arquivo da leira desejada para leitura
         
-        //Pisco longo no LED se abriu arquivo
-        AcendeLED();
-        _delay_ms(1000);
-        ApagaLED();
-        _delay_ms(1000);
-        
-        //inicializa o bluetooth
-        bluetooth_init(38400, 1);
 	
         UINT br;  //variável que carregará o número de bytes lidos em cada f_read, será usado como condição de parada do while
         
@@ -356,6 +338,7 @@ int LerArquivoTodoEPassarPorBluetooth(int Leira){
             f_read(fp, bufferLeitura, BUFFERLEITURA, &br); 
             
         }
+        
     
     
         

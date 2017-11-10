@@ -116,7 +116,7 @@ int main(void) {
         
         int debug;
                 
-        debug = GravarMedicao(0, temperatura, umidade,metano);
+        debug = LerArquivoTodoEPassarPorBluetooth(0);
         
         if(debug!=1){
             AcendeLED();
