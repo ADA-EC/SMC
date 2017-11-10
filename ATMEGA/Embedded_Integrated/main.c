@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Pedro V. B. Jeronymo (pedrovbj@gmail.com)
+ * Amador M. de Souza Neto (amador.neto@usp.br)
  *
  */
 #include <stdio.h>
@@ -40,8 +41,10 @@
 #define AcendeLED() PORTLED |= _BV(PINLED)
 #define ApagaLED() PORTLED &= ~_BV(PINLED)
 
+#define BUFFERLEITURA 200
 #define TAMANHOLINHA 100
 
+int GravarMedicao(int Leira, double temperatura, uint8_t umidade, uint8_t metano);
 
 FATFS FatFs;		// Área de trabalho do FAtFs
 FIL *fp;		// Estrutura de File
@@ -197,4 +200,158 @@ int main(void) {
     }
 
 	return 0;
+}
+
+
+//Grava no arquivo relativo à leira referenciada as medições feitas e a data e hora atuais
+//OBS: não será responsabilidade dessa função habilitar ou desabilitar interrupções
+//Retorna  1 se der certo
+//Retorna  0 se não conseguir montar o cartão SD
+//Retorna -1 se o número de leira passado por argumento é inválido
+//Retorna -2 se não conseguir abrir o arquivo indicado
+//Retorna -3 se falhar em posicionar o cursor no fim do arquivo
+int GravarMedicao(int Leira, double temperatura, uint8_t umidade, uint8_t metano){
+   	
+	FRESULT abriu;
+	char bufferLeitura[BUFFERLEITURA];
+	UINT bw;
+    
+    //Se o número de leira passado como argumento for inválido, retorna -1
+    if(Leira<0 || Leira >3) return -1;
+    
+    // Tenta montar o cartão, se não conseguir retorna 0
+	if(f_mount(0, &FatFs) != FR_OK) return 0;	
+    
+    // cria o ponteiro fp para referenciar o arquivo a ser aberto
+    fp = (FIL *)malloc(sizeof (FIL));
+    
+    
+    //Cria uma string em vai ser armazenada o nome do arquivo a ser aberto
+    char nomeArquivo[15];
+    sprintf(nomeArquivo, "leira%d.csv", Leira);
+    
+    
+    // se o arquivo for aberto, entra na condição
+    if (f_open(fp, nomeArquivo, FA_WRITE | FA_OPEN_ALWAYS) == FR_OK) {	// abre arquivo existente ou cria novo
+                
+        //Se o arquivo aberto está vazio, cria o cabeçalho
+        if(f_size(fp)==0){
+            char cabecalho[50] = "Data, Hora, Temperatura, Umidade, Metano\r\n";	//Define a string de cabeçalho
+            f_write(fp, cabecalho, strlen(cabecalho), &bw);	//escreve a string 'cabecalho'no arquivo	
+        }
+        
+        //Entra no if se conseguir posicionar o "cursor" de escrita no final do arquivo
+        if (f_lseek(fp, f_size(fp)) == FR_OK) { 
+            
+            //Atribui a temperaturaInteira o valor antes da virgula de temperatura
+            //e atribui a temperaturaDecimal 3 casas depois da virgula
+            int temperaturaInteira, temperaturaDecimal;
+            temperaturaInteira = temperatura;
+            temperaturaDecimal = temperatura*1000;
+            temperaturaDecimal = temperaturaDecimal%1000;
+            
+            //Coloca na string 'linha' a linha que será gravada no arquivo
+            char linha[TAMANHOLINHA];
+            sprintf(linha, "DD/MM/AA,HH:MM,%d.%d,%u,%u\r\n", temperaturaInteira, temperaturaDecimal, umidade, metano);
+                        
+            //escreve a string 'linha' no arquivo	
+            f_write(fp, linha, strlen(linha), &bw);	
+            	
+        } else {  //Retorna -3 se falhar em posicionar o cursor no fim do arquivo
+            f_close(fp);// fecha o arquivo	
+            f_mount(0, &FatFs);// desmonta o cartão
+            return -3;
+        }	
+        
+        f_close(fp);  // fecha o arquivo	
+        
+    } else {  //Se falhar em abrir o arquivo desejado retorna -2
+        f_mount(0, &FatFs);// desmonta o cartão
+		return -2; 
+	}
+	
+	// desmonta o cartão	
+    f_mount(0, &FatFs);
+    
+    //Se deu tudo certo retorna 1
+    return 1;
+}
+
+
+//Le todo o arquivo relativo à leira referenciada e o transmite por bluetooth
+//OBS: não será responsabilidade dessa função habilitar ou desabilitar interrupções
+//Retorna  1 se der certo
+//Retorna  0 se não conseguir montar o cartão SD
+//Retorna -1 se o número de leira passado por argumento é inválido
+//Retorna -2 se não conseguir abrir o arquivo indicado
+int LerArquivoTodoEPassarPorBluetooth(int Leira){
+    FRESULT abriu;
+	char* bufferLeitura;
+	UINT bw;
+    
+    //O vetor bufferLeitura é alocado com uma posição a mais para armazenar o '\0' necessário para transmissão bluetooth
+    bufferLeitura = (char*)malloc((BUFFERLEITURA+1)*sizeof(char));
+    
+    //Se o número de leira passado como argumento for inválido, retorna -1
+    if(Leira<0 || Leira >3)
+        return -1;
+    
+    // Tenta montar o cartão, se não conseguir retorna 0
+	if(f_mount(0, &FatFs) != FR_OK)
+		return 0;	
+    
+    // cria o ponteiro fp para referenciar o arquivo a ser aberto
+    fp = (FIL *)malloc(sizeof (FIL));
+    
+    
+    //Cria uma string em vai ser armazenada o nome do arquivo a ser aberto
+    char nomeArquivo[15];
+    sprintf(nomeArquivo, "leira%d.csv", Leira);
+    
+    
+    // se o arquivo for aberto, entra na condição
+    if (f_open(fp, nomeArquivo, FA_READ) == FR_OK) {	// tenta abrir o arquivo da leira desejada para leitura
+        
+        //Pisco longo no LED se abriu arquivo
+        AcendeLED();
+        _delay_ms(1000);
+        ApagaLED();
+        _delay_ms(1000);
+        
+        //inicializa o bluetooth
+        bluetooth_init(38400, 1);
+	
+        UINT br;  //variável que carregará o número de bytes lidos em cada f_read, será usado como condição de parada do while
+        
+        //faz uma primeira leitura no arquivo aberto
+        //f_read(arquivo, buffer de leitura, numero de bytes a serem lidos, ponteiro para numero de bytes lidos)
+        f_read(fp, bufferLeitura, BUFFERLEITURA, &br); 
+            
+        //Enquanto houver algo para ler no arquivo aberto, a leitura continuará sendo feita
+        while(br != 0){
+            
+            //atribui '\0' na ultima posição de bufferLeitura para que bluetooth_print reconheça o fim da string
+            bufferLeitura[br] = '\0';
+            
+            //transmite por bluetooth a string bufferLeitura
+            bluetooth_print(bufferLeitura);
+            
+            //faz uma nova leitura
+            f_read(fp, bufferLeitura, BUFFERLEITURA, &br); 
+            
+        }
+    
+    
+        
+    } else {  //Se falhar em abrir o arquivo desejado retorna -2
+        f_mount(0, &FatFs); // desmonta o cartão
+		return -2; 
+	}
+	
+	// desmonta o cartão	
+        f_mount(0, &FatFs);
+    
+    //Se deu tudo certo retorna 1
+    return 1;
+    
 }
