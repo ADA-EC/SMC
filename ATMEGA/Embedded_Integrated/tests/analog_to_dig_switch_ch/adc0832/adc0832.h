@@ -19,45 +19,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Pedro V. B. Jeronymo (pedrovbj@gmail.com)
+ * Henrique Andrews (andrews.marques225@gmail.com)
  *
  */
+#ifndef ADC0832_H
+#define ADC0832_H
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <avr/interrupt.h>
 #include <util/delay.h>
-#include "bluetooth.h"
 #include <avr/io.h>
 
-#define PORTLED PORTB
-#define PINLED  PORTB0
-#define PREPLED() DDRB |= _BV(PINLED)
-#define ApagaLED() PORTLED &= ~_BV(PINLED)
-#define AcendeLED() PORTLED |= _BV(PINLED)
+#define _ADC0832_CS_DDR DDRC
+#define _ADC0832_CS_PORT PORTC
+#define _ADC0832_CS PORTC2
 
-int main(void) {
-    PREPLED();
-    bluetooth_init(38400, 1);
+#define _ADC0832_CLK_DDR DDRC
+#define _ADC0832_CLK_PORT PORTC
+#define _ADC0832_CLK PORTC3
 
-	//init interrupt
-	sei();
+#define _ADC0832_DO_DDR DDRC
+#define _ADC0832_DO_PIN PINC
+#define _ADC0832_DO PINC4
 
-    bluetooth_print("AT+NAME=GEISA\r\n");
-    _delay_ms(1000);
+#define _ADC0832_DI_DDR DDRC
+#define _ADC0832_DI_PORT PORTC
+#define _ADC0832_DI PORTC5
 
-    bluetooth_print("AT+PSWD=1234\r\n");
-    _delay_ms(1000);
+#define _ADC0832_PULSE_WIDTH 20
+#define _ADC0832_DELAY_WRITE 20
+#define _ADC0832_DELAY_MSB 20
+#define _ADC0832_DELAY_LSB 20
 
-    bluetooth_print("AT+bluetooth=38400,1,0\r\n");
-    _delay_ms(1000);
+#define ADC0832_DELAY_AVR_CONV 100
 
-	while(1) {
-        bluetooth_print("Beep!\r\n");
-        AcendeLED();
-        _delay_ms(500);
-        ApagaLED();
-        _delay_ms(500);
-	}
+/*
+#define _ADC0832_PULSE_WIDTH 95
+#define _ADC0832_DELAY_WRITE 263
+#define _ADC0832_DELAY_MSB 1575
+#define _ADC0832_DELAY_LSB 630
+*/
 
-	return 0;
-}
+void    adc0832_init();
+uint8_t adc0832_convert(uint8_t* lsb_ret, int ch); //*lsb, channel (0 or 1)
+uint8_t adc0832_average_conv(int num_conv, int ch);
+
+
+#endif

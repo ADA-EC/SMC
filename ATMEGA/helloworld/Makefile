@@ -1,4 +1,3 @@
-#
 # Sistema de Monitoramento de Compostagem
 #
 # Tem como proposito monitorar as leiras do grupo GEISA (USP-SC)
@@ -21,7 +20,8 @@
 # Pedro V. B. Jeronymo (pedrovbj@gmail.com)
 #
 NAME=hello
-CPU_F=8000000
+#CPU_F=8000000
+CPU_F=16000000
 
 all: exe
 	avr-objcopy -O ihex -R .eeprom $(NAME) $(NAME).hex

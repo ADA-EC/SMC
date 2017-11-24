@@ -20,12 +20,13 @@
 #
 # Pedro V. B. Jeronymo (pedrovbj@gmail.com)
 #
-NAME=main
-CFLAGS=-Os -DF_CPU=$(CPU_F) 
+NAME=gravar
+CFLAGS=-Os -DF_CPU=$(CPU_F)
 MICRO=328p
-CPU_F=8000000
+#CPU_F=8000000
+CPU_F=16000000
 OBJ = main.o bluetooth/bluetooth.o
-OBJCPP = SD/ff.o SD/sdmm.o 
+OBJCPP = SD/ff.o SD/sdmm.o
 
 all: exe
 	avr-objcopy -O ihex -R .eeprom $(NAME).out $(NAME).hex
@@ -35,7 +36,7 @@ exe: $(OBJ) $(OBJCPP)
 
 %.o: %.c
 	avr-gcc -c -o $@ $< $(CFLAGS) -std=c11 -mmcu=atmega$(MICRO)
-	
+
 %.o: %.cpp
 	avr-gcc -c -o $@ $< $(CFLAGS) -mmcu=atmega$(MICRO)
 

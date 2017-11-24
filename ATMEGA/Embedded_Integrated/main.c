@@ -66,13 +66,13 @@ void blink_led() {
 DWORD get_fattime (void)
 {
 	uint8_t hora, minuto, segundo, dia, mes, ano;
-    
+
     sei();
-    
+
     rtc_get_date_time(&hora, &minuto, &segundo, &dia, &mes, &ano);
-    
+
     cli();
-    
+
 	// Retorna o dia e hora configurado como DWORD
 	return	  ((DWORD)(ano - 1980) << 25)	// Ano 2017
 	| ((DWORD)mes << 21)				// Mes 10
@@ -108,7 +108,7 @@ int main(void) {
 
     int debug;
     char debugchar[15];
-    
+
     /* Pin configuration */
     DDRD &= ~_BV(DDD2); // PD2 (PCINT0 pin) is now an input
     DDRD &= ~_BV(DDD3); // PD3 (PCINT1 pin) is now an input
@@ -163,7 +163,7 @@ int main(void) {
             PORTB |= _BV(PORTB0);
 
             //Init bluetooth
-            bluetooth_init(38400, 1);
+            bluetooth_init(9600, 0); //PL2303
         }
         while(bluetooth_enabled) {
             if(!(PIND & _BV(PIND3))) {
@@ -173,9 +173,11 @@ int main(void) {
                 EIFR |= _BV(INTF1);
                 break;
             }
+            bluetooth_print("Hello World!\n");
             debug = LerArquivoTodoEPassarPorBluetooth(0);
             sprintf(debugchar, "beep %d\r\n", debug);
             bluetooth_print(debugchar);
+
             _delay_ms(1000);
         }
         if(bluetooth_enabled) {
@@ -188,10 +190,14 @@ int main(void) {
         uint8_t umidade = 50;
         uint8_t metano = 30;
 
-        GravarMedicao(0, temperatura, umidade, metano);
-        
-        
-        
+        debug = GravarMedicao(0, temperatura, umidade, metano);
+
+        if(debug==-2) {
+            AcendeLED();
+            _delay_ms(2000);
+            ApagaLED();
+        }
+
 
     }
 
@@ -207,76 +213,76 @@ int main(void) {
 //Retorna -2 se não conseguir abrir o arquivo indicado
 //Retorna -3 se falhar em posicionar o cursor no fim do arquivo
 int GravarMedicao(int Leira, double temperatura, uint8_t umidade, uint8_t metano){
-   	
+
 	FRESULT abriu;
 	char bufferLeitura[BUFFERLEITURA];
 	UINT bw;
-    
+
     //Se o número de leira passado como argumento for inválido, retorna -1
     if(Leira<0 || Leira >3) return -1;
-    
+
     uint8_t hora, minuto, segundo, dia, mes, ano;
-    
+
     sei();
-    
+
     rtc_get_date_time(&hora, &minuto, &segundo, &dia, &mes, &ano);
-    
+
     cli();
-    
+
     // Tenta montar o cartão, se não conseguir retorna 0
-	if(f_mount(0, &FatFs) != FR_OK) return 0;	
-    
+	if(f_mount(0, &FatFs) != FR_OK) return 0;
+
     // cria o ponteiro fp para referenciar o arquivo a ser aberto
     fp = (FIL *)malloc(sizeof (FIL));
-    
-    
+
+
     //Cria uma string em vai ser armazenada o nome do arquivo a ser aberto
     char nomeArquivo[15];
     sprintf(nomeArquivo, "leira%d.csv", Leira);
-    
-    
+
+
     // se o arquivo for aberto, entra na condição
     if (f_open(fp, nomeArquivo, FA_WRITE | FA_OPEN_ALWAYS) == FR_OK) {	// abre arquivo existente ou cria novo
-                
+
         //Se o arquivo aberto está vazio, cria o cabeçalho
         if(f_size(fp)==0){
             char cabecalho[50] = "Data, Hora, Temperatura, Umidade, Metano\r\n";	//Define a string de cabeçalho
-            f_write(fp, cabecalho, strlen(cabecalho), &bw);	//escreve a string 'cabecalho'no arquivo	
+            f_write(fp, cabecalho, strlen(cabecalho), &bw);	//escreve a string 'cabecalho'no arquivo
         }
-        
+
         //Entra no if se conseguir posicionar o "cursor" de escrita no final do arquivo
-        if (f_lseek(fp, f_size(fp)) == FR_OK) { 
-            
+        if (f_lseek(fp, f_size(fp)) == FR_OK) {
+
             //Atribui a temperaturaInteira o valor antes da virgula de temperatura
             //e atribui a temperaturaDecimal 3 casas depois da virgula
             int temperaturaInteira, temperaturaDecimal;
             temperaturaInteira = temperatura;
             temperaturaDecimal = temperatura*1000;
             temperaturaDecimal = temperaturaDecimal%1000;
-            
+
             //Coloca na string 'linha' a linha que será gravada no arquivo
             char linha[TAMANHOLINHA];
             sprintf(linha, "%02d/%02d/%02d,%02d:%02d,%d.%d,%u,%u\r\n", dia, mes, ano, hora, minuto, temperaturaInteira, temperaturaDecimal, umidade, metano);
-                        
-            //escreve a string 'linha' no arquivo	
-            f_write(fp, linha, strlen(linha), &bw);	
-            	
+
+            //escreve a string 'linha' no arquivo
+            f_write(fp, linha, strlen(linha), &bw);
+
         } else {  //Retorna -3 se falhar em posicionar o cursor no fim do arquivo
-            f_close(fp);// fecha o arquivo	
+            f_close(fp);// fecha o arquivo
             f_mount(0, &FatFs);// desmonta o cartão
             return -3;
-        }	
-        
-        f_close(fp);  // fecha o arquivo	
-        
+        }
+
+        f_close(fp);  // fecha o arquivo
+
     } else {  //Se falhar em abrir o arquivo desejado retorna -2
         f_mount(0, &FatFs);// desmonta o cartão
-		return -2; 
+		return -2;
 	}
-	
-	// desmonta o cartão	
+
+	// desmonta o cartão
     f_mount(0, &FatFs);
-    
+
     //Se deu tudo certo retorna 1
     return 1;
 }
@@ -292,65 +298,65 @@ int LerArquivoTodoEPassarPorBluetooth(int Leira){
     FRESULT abriu;
 	char* bufferLeitura;
 	UINT bw;
-    
+
     //O vetor bufferLeitura é alocado com uma posição a mais para armazenar o '\0' necessário para transmissão bluetooth
     bufferLeitura = (char*)malloc((BUFFERLEITURA+1)*sizeof(char));
-    
+
     //Se o número de leira passado como argumento for inválido, retorna -1
     if(Leira<0 || Leira >3)
         return -1;
-    
-    
-    
+
+
+
     // Tenta montar o cartão, se não conseguir retorna 0
 	if(f_mount(0, &FatFs) != FR_OK)
-		return 0;	
-    
+		return 0;
+
     // cria o ponteiro fp para referenciar o arquivo a ser aberto
     fp = (FIL *)malloc(sizeof (FIL));
-    
-    
+
+
     //Cria uma string em vai ser armazenada o nome do arquivo a ser aberto
     char nomeArquivo[15];
     sprintf(nomeArquivo, "LEIRA%d.CSV", Leira);
-    
-    
+
+
     // se o arquivo for aberto, entra na condição
     if (f_open(fp, nomeArquivo, FA_READ) == FR_OK) {	// tenta abrir o arquivo da leira desejada para leitura
-        
-	
+
+
         UINT br;  //variável que carregará o número de bytes lidos em cada f_read, será usado como condição de parada do while
-        
+
         //faz uma primeira leitura no arquivo aberto
         //f_read(arquivo, buffer de leitura, numero de bytes a serem lidos, ponteiro para numero de bytes lidos)
-        f_read(fp, bufferLeitura, BUFFERLEITURA, &br); 
-            
+        f_read(fp, bufferLeitura, BUFFERLEITURA, &br);
+
         //Enquanto houver algo para ler no arquivo aberto, a leitura continuará sendo feita
         while(br != 0){
-            
+
             //atribui '\0' na ultima posição de bufferLeitura para que bluetooth_print reconheça o fim da string
             bufferLeitura[br] = '\0';
-            
+
             //transmite por bluetooth a string bufferLeitura
             bluetooth_print(bufferLeitura);
-            
+
             //faz uma nova leitura
-            f_read(fp, bufferLeitura, BUFFERLEITURA, &br); 
-            
+            f_read(fp, bufferLeitura, BUFFERLEITURA, &br);
+
         }
-        
-    
-    
-        
+
+
+
+
     } else {  //Se falhar em abrir o arquivo desejado retorna -2
         f_mount(0, &FatFs); // desmonta o cartão
-		return -2; 
+		return -2;
 	}
-	
-	// desmonta o cartão	
+
+	// desmonta o cartão
         f_mount(0, &FatFs);
-    
+
     //Se deu tudo certo retorna 1
     return 1;
-    
+
 }

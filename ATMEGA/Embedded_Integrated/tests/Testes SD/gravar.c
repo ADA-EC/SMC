@@ -28,7 +28,7 @@
 #include "SD/integer.h"
 
 
-FATFS FatFs;		// Área de trabalho do FAtFs 
+FATFS FatFs;		// Área de trabalho do FAtFs
 FIL *fp;		// Estrutura de File
 
 
@@ -36,41 +36,52 @@ DWORD get_fattime (void)
 {
 	// Retorna o dia e hora configurado como DWORD
 	return	  ((DWORD)(2017 - 1980) << 25)	// Ano 2017
-	| ((DWORD)10 << 21)				// Mes 10 
+	| ((DWORD)10 << 21)				// Mes 10
 	| ((DWORD)26 << 16)				// Dia 26
 	| ((DWORD)16 << 11)				// Hora 20 (considerando fuso horario 0)
-	| ((DWORD)31 << 5)				// Minuto 0 
+	| ((DWORD)31 << 5)				// Minuto 0
 	| ((DWORD)0 >> 1);				// Segundo 0
 }
 
 int main (){
-    
+	DDRB |= _BV(DDB0);
+
 	// reboot delay
 	_delay_ms(200);
 
+	PORTB |= _BV(PORTB0);
+	_delay_ms(1000);
+	PORTB &= ~_BV(PORTB0);
+	_delay_ms(1000);
+	
 	// inicializa o cartão
 	UINT bw;
 	f_mount(0, &FatFs);		// Monta o cartão e fornece uma area de trabalho FatFs ao modulo
 
-	
+	_delay_ms(1000);
+	PORTB ^= _BV(PORTB0);
+
 	// cria o ponteiro fp para referenciar o arquivo a ser aberto
 	fp = (FIL *)malloc(sizeof (FIL));
-	
+
 	// se o arquivo for aberto, entra na condição
 	if (f_open(fp, "file.txt", FA_WRITE | FA_CREATE_ALWAYS)==FR_OK) {	// Cria um arquivo
 
 		char *text = "Ola, eu sou um arquivinho maroto\r\n";
-		
-		f_write(fp, text, strlen(text), &bw);	//escreve a string 'text'no arquivo	
-		
-		f_close(fp);// Fecha o arquivo 
-		
+
+		f_write(fp, text, strlen(text), &bw);	//escreve a string 'text'no arquivo
+
+		f_close(fp);// Fecha o arquivo
+
 	}
 
 
-	// desmonta o cartão	
-	f_mount(0, &FatFs);	
-
+	// desmonta o cartão
+	f_mount(0, &FatFs);
+	while(1) {
+		PORTB ^= _BV(PORTB0);
+		_delay_ms(500);
+	}
 
 	return 0;
 }
