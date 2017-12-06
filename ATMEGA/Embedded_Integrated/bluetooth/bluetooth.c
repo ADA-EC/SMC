@@ -28,19 +28,48 @@ void bluetooth_init(uint32_t baudrate, uint8_t double_speed) {
 
 
 uint8_t bluetooth_getchar() {
-   loop_until_bit_is_set(UCSR0A, RXC0);
-   return UDR0;
+	loop_until_bit_is_set(UCSR0A, RXC0);
+    return UDR0;
 }
 
-void bluetooth_read_line(uint8_t *value, uint8_t size) {
+uint8_t bluetooth_getchar_int(volatile uint8_t *pin, uint8_t pin_num, uint8_t level) {
+	do {
+	    //uint8_t value = (PIND & _BV(PIND3));
+	    //if (level) {
+	    //    if (value) {
+	     //       return 0x18; //ascii symbol 'cancel'
+	    //    }
+	    //} else {
+	     //   if (!(value)) {
+	     //       return 0x18; //ascii symbol 'cancel'
+	     //   }
+	    //}
+	    if(!(PIND & _BV(PIND3))) {
+	        bluetooth_print("pin low\r\n");
+	        return 0x18;
+	    }
+	} while(bit_is_clear(UCSR0A, RXC0));
+    return UDR0;
+}
+
+uint8_t bluetooth_read_line_int(uint8_t *value, uint8_t size, volatile uint8_t *pin, uint8_t pin_num, uint8_t level) {
     uint8_t i;
     for (i = 0; i < size; i++) {
-        value[i] = bluetooth_getchar();
+        bluetooth_print("readline\r\n");
+        uint8_t c = bluetooth_getchar_int(pin, pin_num, level);
+        if (c == 0x18) {
+            return 1;
+        }
+        value[i] = c; 
         if (value[i] == '\r') {
+            value[i] = '\0';
+            break;
+        } else if (value[i] == '\n') {
             value[i] = '\0';
             break;
         }
     }
+    return 0;
 }
 
 void bluetooth_putchar(const uint8_t data) {

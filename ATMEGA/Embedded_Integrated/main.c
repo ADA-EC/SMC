@@ -163,22 +163,38 @@ int main(void) {
             PORTB |= _BV(PORTB0);
 
             //Init bluetooth
-            bluetooth_init(9600, 0); //PL2303
+            bluetooth_init(38400, 0); //PL2303
         }
         while(bluetooth_enabled) {
-            if(!(PIND & _BV(PIND3))) {
+            uint8_t comando[50];
+            _delay_ms(100);
+            uint8_t flag = bluetooth_read_line_int(comando, 50, &PIND, PIND3, 0);
+            if (flag) {
+                bluetooth_print("flag\r\n");
                 PORTB &= ~_BV(PORTB0);
                 _delay_ms(300);
                 EIFR |= _BV(INTF0); //Clear interrupt flags
                 EIFR |= _BV(INTF1);
                 break;
             }
-            bluetooth_print("Hello World!\n");
-            debug = LerArquivoTodoEPassarPorBluetooth(0);
-            sprintf(debugchar, "beep %d\r\n", debug);
-            bluetooth_print(debugchar);
 
-            _delay_ms(1000);
+            if(strcmp(comando, "mandatudo")==0){
+                bluetooth_print("mando\r\n");
+            }
+            else if(strcmp(comando, "leituraatual")==0){
+                bluetooth_print("agora\r\n");
+            }
+            else {
+                bluetooth_print("erro:");
+                bluetooth_print(comando);
+                bluetooth_print("nao eh valido\r\n");
+            }
+            
+            //bluetooth_print("Hello World!\n");
+//            debug = LerArquivoTodoEPassarPorBluetooth(0);
+  //          sprintf(debugchar, "beep %d\r\n", debug);
+    //        bluetooth_print(debugchar);
+//            _delay_ms(1000);
         }
         if(bluetooth_enabled) {
             bluetooth_enabled = false;
@@ -186,19 +202,19 @@ int main(void) {
         }
 
         // Read sensors
-        double temperatura = 25.2;
-        uint8_t umidade = 50;
-        uint8_t metano = 30;
+        //double temperatura = 25.2;
+        //uint8_t umidade = 50;
+        //uint8_t metano = 30;
 
-        debug = GravarMedicao(0, temperatura, umidade, metano);
+        
 
-        if(debug==-2) {
-            AcendeLED();
-            _delay_ms(2000);
-            ApagaLED();
-        }
+        //debug = GravarMedicao(0, temperatura, umidade, metano);
 
-
+        //if(debug==-2) {
+        //    AcendeLED();
+        //    _delay_ms(2000);
+        //    ApagaLED();
+        //}
     }
 
 	return 0;

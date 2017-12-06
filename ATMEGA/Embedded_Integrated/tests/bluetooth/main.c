@@ -37,7 +37,7 @@
 
 int main(void) {
     PREPLED();
-    bluetooth_init(38400, 1);
+    bluetooth_init(38400, 0);
 
 	//init interrupt
 	sei();
