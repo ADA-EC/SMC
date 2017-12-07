@@ -144,19 +144,25 @@ int main(void) {
     rtc_enable_alarm(true);
     rtc_set_alarm(0b1110, 23, 19, 5);
 
+    // Enable interrupts
+    sei();
+
+    // Clear alarm flag
+    rtc_check_alarm();
+
     /* Loop code */
 	while(1) {
+        
         // Enable interrupts
         sei();
-
-        // Clear alarm flag
-        rtc_check_alarm();
 
         // Powers Down ATMEGA
         powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);
 
+
         // Disable interrupts
         cli();
+
 
         // Bluetooth Communication
         if (bluetooth_enabled) {
@@ -164,20 +170,19 @@ int main(void) {
 
             //Init bluetooth
             bluetooth_init(38400, 0); //PL2303
+            bluetooth_print("\r\ninit\r\n");
         }
         while(bluetooth_enabled) {
             uint8_t comando[50];
             _delay_ms(100);
             uint8_t flag = bluetooth_read_line_int(comando, 50, &PIND, PIND3, 0);
             if (flag) {
-                bluetooth_print("flag\r\n");
+                //bluetooth_print("flag\n");
                 PORTB &= ~_BV(PORTB0);
-                _delay_ms(300);
                 EIFR |= _BV(INTF0); //Clear interrupt flags
                 EIFR |= _BV(INTF1);
                 break;
             }
-
             if(strcmp(comando, "mandatudo")==0){
                 bluetooth_print("mando\r\n");
             }
@@ -189,16 +194,25 @@ int main(void) {
                 bluetooth_print(comando);
                 bluetooth_print("nao eh valido\r\n");
             }
-            
             //bluetooth_print("Hello World!\n");
 //            debug = LerArquivoTodoEPassarPorBluetooth(0);
   //          sprintf(debugchar, "beep %d\r\n", debug);
     //        bluetooth_print(debugchar);
 //            _delay_ms(1000);
         }
+        
         if(bluetooth_enabled) {
             bluetooth_enabled = false;
             continue;
+        }else{
+            // Enable interrupts
+            sei();
+
+            // Clear alarm flag
+            rtc_check_alarm();
+
+            // Disable interrupts
+            cli();
         }
 
         // Read sensors
