@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "C:\\Users\\henri\\Desktop\\AndroidStudioProjects\\GeisaApp\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v21\\abc_action_bar_item_background_material.xml",
+        "source": "C:\\Users\\henri\\.android\\build-cache\\6fdabe5864db44dd1915816826406b77b738f944\\output\\res\\drawable-v21\\abc_action_bar_item_background_material.xml"
+    },
+    {
+        "merged": "C:\\Users\\henri\\Desktop\\AndroidStudioProjects\\GeisaApp\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v21\\abc_edit_text_material.xml",
+        "source": "C:\\Users\\henri\\.android\\build-cache\\6fdabe5864db44dd1915816826406b77b738f944\\output\\res\\drawable-v21\\abc_edit_text_material.xml"
+    },
+    {
+        "merged": "C:\\Users\\henri\\Desktop\\AndroidStudioProjects\\GeisaApp\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v21\\abc_btn_colored_material.xml",
+        "source": "C:\\Users\\henri\\.android\\build-cache\\6fdabe5864db44dd1915816826406b77b738f944\\output\\res\\drawable-v21\\abc_btn_colored_material.xml"
+    },
+    {
+        "merged": "C:\\Users\\henri\\Desktop\\AndroidStudioProjects\\GeisaApp\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v21\\notification_action_background.xml",
+        "source": "C:\\Users\\henri\\.android\\build-cache\\6fdabe5864db44dd1915816826406b77b738f944\\output\\res\\drawable-v21\\notification_action_background.xml"
+    }
+]

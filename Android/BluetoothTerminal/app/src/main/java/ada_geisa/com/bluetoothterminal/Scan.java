@@ -48,7 +48,7 @@ public class Scan extends Activity implements Bluetooth.DiscoveryCallback, Adapt
 
         bluetooth.scanDevices();
         progress.setVisibility(View.VISIBLE);
-        state.setText("Scanning...");
+        state.setText("Procurando...");
         listView.setEnabled(false);
 
         scan.setEnabled(false);
@@ -67,7 +67,7 @@ public class Scan extends Activity implements Bluetooth.DiscoveryCallback, Adapt
 
                 devices = new ArrayList<>();
                 progress.setVisibility(View.VISIBLE);
-                state.setText("Scanning...");
+                state.setText("Procurando...");
                 bluetooth.scanDevices();
             }
         });
@@ -94,7 +94,7 @@ public class Scan extends Activity implements Bluetooth.DiscoveryCallback, Adapt
     @Override
     public void onFinish() {
         setProgressVisibility(View.INVISIBLE);
-        setText("Scan finished!");
+        setText("Procura finalizada!");
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -120,7 +120,7 @@ public class Scan extends Activity implements Bluetooth.DiscoveryCallback, Adapt
     @Override
     public void onPair(BluetoothDevice device) {
         setProgressVisibility(View.INVISIBLE);
-        setText("Paired!");
+        setText("Pareado!");
         Intent i = new Intent(Scan.this, Select.class);
         startActivity(i);
         finish();
@@ -129,19 +129,19 @@ public class Scan extends Activity implements Bluetooth.DiscoveryCallback, Adapt
     @Override
     public void onUnpair(BluetoothDevice device) {
         setProgressVisibility(View.INVISIBLE);
-        setText("Paired!");
+        setText("Pareado!");
     }
 
     @Override
     public void onError(String message) {
         setProgressVisibility(View.INVISIBLE);
-        setText("Error: "+message);
+        setText("Erro: "+message);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         setProgressVisibility(View.VISIBLE);
-        setText("Pairing...");
+        setText("Pareando...");
         bluetooth.pair(devices.get(position));
     }
 }

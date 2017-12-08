@@ -1,0 +1,123 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:2:1-30:12
+	package
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:3:5-37
+		INJECTED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:2:11-69
+	android:versionCode
+		INJECTED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml
+application
+ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:5:5-23:19
+MERGED from [com.android.support:appcompat-v7:25.3.1] C:\Users\henri\.android\build-cache\6fdabe5864db44dd1915816826406b77b738f944\output\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-v4:25.3.1] C:\Users\henri\.android\build-cache\408794a72f99f7082f77715c38723c140e8888f4\output\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-fragment:25.3.1] C:\Users\henri\.android\build-cache\93d5a8c2122afea2021e0f8ad3dd5c5e70045247\output\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-media-compat:25.3.1] C:\Users\henri\.android\build-cache\5240d598cab3ba850a00bfc895ebe6bb0752ccf0\output\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-core-ui:25.3.1] C:\Users\henri\.android\build-cache\ce4b13ee7d93d44417638e3c994ff219419b1430\output\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-core-utils:25.3.1] C:\Users\henri\.android\build-cache\b937a67ed5750c13b037a6da6abbc18cfacf7e47\output\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:animated-vector-drawable:25.3.1] C:\Users\henri\.android\build-cache\3424e11054af2a79fc511f20f3544533f94ddd88\output\AndroidManifest.xml:26:5-20
+MERGED from [com.android.support:support-vector-drawable:25.3.1] C:\Users\henri\.android\build-cache\3184c9e85e5c8ac1f1483ae0b01d49d4d15615f9\output\AndroidManifest.xml:26:5-20
+MERGED from [com.android.support:support-compat:25.3.1] C:\Users\henri\.android\build-cache\7d8a4f46455d66c0374bfa86d7c892047ba4a888\output\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\henri\.android\build-cache\e68bd141c1b14924542c3432bf21394ee9688fbd\output\AndroidManifest.xml:9:5-20
+	android:label
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:8:9-41
+	android:supportsRtl
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:10:9-35
+	android:roundIcon
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:9:9-54
+	android:allowBackup
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:6:9-35
+	android:icon
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:7:9-43
+	android:theme
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:11:9-40
+activity#ada_geisa.com.geisaapp.MainActivity
+ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:12:9-18:20
+	android:name
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:12:19-47
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:13:13-17:29
+action#android.intent.action.MAIN
+ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:14:17-69
+	android:name
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:14:25-66
+category#android.intent.category.LAUNCHER
+ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:16:17-77
+	android:name
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:16:27-74
+activity#ada_geisa.com.geisaapp.NewActivity
+ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:19:9-49
+	android:name
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:19:19-46
+activity#ada_geisa.com.geisaapp.NewActivity2
+ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:20:9-50
+	android:name
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:20:19-47
+activity#ada_geisa.com.geisaapp.NewActivity3
+ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:21:9-50
+	android:name
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:21:19-47
+activity#ada_geisa.com.geisaapp.NewActivity4
+ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:22:9-59
+	android:name
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:22:19-47
+uses-permission#android.permission.BLUETOOTH
+ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:24:5-68
+	android:name
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:24:22-65
+uses-permission#android.permission.BLUETOOTH_ADMIN
+ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:25:5-74
+	android:name
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:25:22-71
+uses-permission#android.permission.BLUETOOTH_PRIVILEGED
+ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:26:5-79
+	android:name
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:26:22-76
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:27:5-81
+	android:name
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:27:22-78
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:28:5-79
+	android:name
+		ADDED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml:28:22-76
+uses-sdk
+INJECTED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+MERGED from [com.android.support:appcompat-v7:25.3.1] C:\Users\henri\.android\build-cache\6fdabe5864db44dd1915816826406b77b738f944\output\AndroidManifest.xml:21:5-23:78
+MERGED from [com.android.support:support-v4:25.3.1] C:\Users\henri\.android\build-cache\408794a72f99f7082f77715c38723c140e8888f4\output\AndroidManifest.xml:21:5-23:54
+MERGED from [com.android.support:support-fragment:25.3.1] C:\Users\henri\.android\build-cache\93d5a8c2122afea2021e0f8ad3dd5c5e70045247\output\AndroidManifest.xml:21:5-23:60
+MERGED from [com.android.support:support-media-compat:25.3.1] C:\Users\henri\.android\build-cache\5240d598cab3ba850a00bfc895ebe6bb0752ccf0\output\AndroidManifest.xml:21:5-23:63
+MERGED from [com.android.support:support-core-ui:25.3.1] C:\Users\henri\.android\build-cache\ce4b13ee7d93d44417638e3c994ff219419b1430\output\AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support:support-core-utils:25.3.1] C:\Users\henri\.android\build-cache\b937a67ed5750c13b037a6da6abbc18cfacf7e47\output\AndroidManifest.xml:21:5-23:61
+MERGED from [com.android.support:animated-vector-drawable:25.3.1] C:\Users\henri\.android\build-cache\3424e11054af2a79fc511f20f3544533f94ddd88\output\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:25.3.1] C:\Users\henri\.android\build-cache\3184c9e85e5c8ac1f1483ae0b01d49d4d15615f9\output\AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:support-compat:25.3.1] C:\Users\henri\.android\build-cache\7d8a4f46455d66c0374bfa86d7c892047ba4a888\output\AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\henri\.android\build-cache\e68bd141c1b14924542c3432bf21394ee9688fbd\output\AndroidManifest.xml:5:5-7:41
+	tools:overrideLibrary
+		ADDED from [com.android.support:appcompat-v7:25.3.1] C:\Users\henri\.android\build-cache\6fdabe5864db44dd1915816826406b77b738f944\output\AndroidManifest.xml:23:9-75
+	android:targetSdkVersion
+		INJECTED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\henri\Desktop\AndroidStudioProjects\GeisaApp\app\src\main\AndroidManifest.xml
+meta-data#android.support.VERSION
+ADDED from [com.android.support:appcompat-v7:25.3.1] C:\Users\henri\.android\build-cache\6fdabe5864db44dd1915816826406b77b738f944\output\AndroidManifest.xml:25:5-27:34
+MERGED from [com.android.support:support-v4:25.3.1] C:\Users\henri\.android\build-cache\408794a72f99f7082f77715c38723c140e8888f4\output\AndroidManifest.xml:25:5-27:34
+MERGED from [com.android.support:support-fragment:25.3.1] C:\Users\henri\.android\build-cache\93d5a8c2122afea2021e0f8ad3dd5c5e70045247\output\AndroidManifest.xml:25:5-27:34
+MERGED from [com.android.support:support-media-compat:25.3.1] C:\Users\henri\.android\build-cache\5240d598cab3ba850a00bfc895ebe6bb0752ccf0\output\AndroidManifest.xml:25:5-27:34
+MERGED from [com.android.support:support-core-ui:25.3.1] C:\Users\henri\.android\build-cache\ce4b13ee7d93d44417638e3c994ff219419b1430\output\AndroidManifest.xml:25:5-27:34
+MERGED from [com.android.support:support-core-utils:25.3.1] C:\Users\henri\.android\build-cache\b937a67ed5750c13b037a6da6abbc18cfacf7e47\output\AndroidManifest.xml:25:5-27:34
+MERGED from [com.android.support:animated-vector-drawable:25.3.1] C:\Users\henri\.android\build-cache\3424e11054af2a79fc511f20f3544533f94ddd88\output\AndroidManifest.xml:22:5-24:34
+MERGED from [com.android.support:support-vector-drawable:25.3.1] C:\Users\henri\.android\build-cache\3184c9e85e5c8ac1f1483ae0b01d49d4d15615f9\output\AndroidManifest.xml:22:5-24:34
+MERGED from [com.android.support:support-compat:25.3.1] C:\Users\henri\.android\build-cache\7d8a4f46455d66c0374bfa86d7c892047ba4a888\output\AndroidManifest.xml:25:5-27:34
+	android:value
+		ADDED from [com.android.support:appcompat-v7:25.3.1] C:\Users\henri\.android\build-cache\6fdabe5864db44dd1915816826406b77b738f944\output\AndroidManifest.xml:27:9-31
+	android:name
+		ADDED from [com.android.support:appcompat-v7:25.3.1] C:\Users\henri\.android\build-cache\6fdabe5864db44dd1915816826406b77b738f944\output\AndroidManifest.xml:26:9-47
