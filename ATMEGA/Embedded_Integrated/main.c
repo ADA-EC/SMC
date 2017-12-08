@@ -144,17 +144,14 @@ int main(void) {
     rtc_enable_alarm(true);
     rtc_set_alarm(0b1110, 23, 19, 5);
 
-    // Enable interrupts
-    sei();
-
-    // Clear alarm flag
-    rtc_check_alarm();
-
     /* Loop code */
 	while(1) {
-        
+            
         // Enable interrupts
         sei();
+
+        // Clear alarm flag
+        rtc_check_alarm();
 
         // Powers Down ATMEGA
         powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);
@@ -205,14 +202,7 @@ int main(void) {
             bluetooth_enabled = false;
             continue;
         }else{
-            // Enable interrupts
-            sei();
-
-            // Clear alarm flag
-            rtc_check_alarm();
-
-            // Disable interrupts
-            cli();
+            
         }
 
         // Read sensors

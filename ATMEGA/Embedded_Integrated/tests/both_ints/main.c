@@ -33,10 +33,10 @@
 //(DEBUG)
 void blink_led() {
     int i;
-    for (i = 0; i < 5; i++) {
-        PORTC |= _BV(PORTC3);
+    for (i = 0; i < 1; i++) {
+        PORTB |= _BV(PORTB0);
         _delay_ms(200);
-        PORTC &= ~_BV(PORTC3);
+        PORTB &= ~_BV(PORTB0);
         _delay_ms(200);
     }
 }
@@ -44,8 +44,8 @@ void blink_led() {
 // Interrupt 0 handler
 ISR (INT0_vect, ISR_BLOCK)
 {
-    blink_led();
-    blink_led();
+    //blink_led();
+    PORTB ^= _BV(PORTB0);
 }
 
 // Interrupt 1 handler
@@ -62,7 +62,7 @@ int main(void) {
     PORTD |= _BV(PORTD2); // PD3 is now an input with pull-up enabled
     PORTD |= _BV(PORTD3); // PD3 is now an input with pull-up enabled
 
-    DDRC |= _BV(DDC3); //Set PC3 as output (DEBUG LED)
+    DDRB |= _BV(DDB0); //Set PC3 as output (DEBUG LED)
 
     /* Interruption setup*/
     // Set INT0 to trigger on low level
@@ -79,7 +79,7 @@ int main(void) {
     /* Setup code */
 
     // Turns off led on PC3
-    PORTC &= ~_BV(PORTC3);
+    PORTB &= ~_BV(PORTB0);
 
     // Interruptions must be enabled to configure RTC
 	sei();

@@ -62,7 +62,7 @@ int main(void) {
     rtc_set_time(0,19,07);
     rtc_SQW_enable(false);
     rtc_enable_alarm(true);
-    rtc_set_alarm(0b1111, 23, 19, 5);
+    rtc_set_alarm(0b1110, 23, 19, 5);
 
     /* Loop code */
 	while(true) {

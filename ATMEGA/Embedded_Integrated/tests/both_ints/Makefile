@@ -23,7 +23,7 @@
 NAME=main
 CFLAGS=-Os -DF_CPU=$(CPU_F) -std=c11
 MICRO=328p
-CPU_F=8000000
+CPU_F=16000000
 OBJ = main.o ds3231/ds3231.o ds3231/twi.o ds3231/twi-lowlevel.o LowPower/LowPower.o
 
 all: exe
@@ -36,7 +36,7 @@ exe: $(OBJ)
 	avr-gcc -c -o $@ $< $(CFLAGS) -mmcu=atmega$(MICRO)
 
 upload: all
-	avrdude -c avrisp -p m$(MICRO) -P /dev/ttyACM0 -b 19200 -U flash:w:$(NAME).hex
+	avrdude -c avrisp -p m$(MICRO) -P /dev/ttyUSB0 -b 19200 -U flash:w:$(NAME).hex
 
 clean:
 	rm $(NAME).out

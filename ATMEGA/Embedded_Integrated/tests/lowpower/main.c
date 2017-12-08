@@ -28,27 +28,27 @@
 #include <util/delay.h>
 #include "LowPower/LowPower.h"
 
-ISR (INT1_vect)
+ISR (INT0_vect)
 {
     // Interrupt handler
 }
 
 int main(void) {
-    DDRD &= ~(1 << DDD3);     // Clear the PD3 pin
+    DDRD &= ~(1 << DDD2);     // Clear the PD3 pin
     // PD3 (PCINT1 pin) is now an input
 
-    PORTD |= (1 << PORTD3);    // turn On the Pull-up
+    PORTD |= (1 << PORTD2);    // turn On the Pull-up
     // PD3 is now an input with pull-up enabled
 
-    DDRC |= _BV(DDC3); //Set PC3 as output
+    DDRB |= _BV(DDB0); //Set PC3 as output
 
     EICRA &= ~(1 << ISC10);
     EICRA &= ~(1 << ISC11);    // set INT1 to trigger on low level
 
-    EIMSK |= (1 << INT1);     // Turns on INT1
+    EIMSK |= (1 << INT0);     // Turns on INT1
 
     // Turns off led on PC3
-    PORTC &= ~_BV(PORTC3);
+    PORTB &= ~_BV(PORTB0);
 
 	while(1) {
         // Enable interrupts
@@ -63,9 +63,9 @@ int main(void) {
         //Blink led
         int i;
         for (i = 0; i < 5; i++) {
-            PORTC |= _BV(PORTC3);
+            PORTB |= _BV(PORTB0);
             _delay_ms(200);
-            PORTC &= ~_BV(PORTC3);
+            PORTB &= ~_BV(PORTB0);
             _delay_ms(200);
         }
     }
