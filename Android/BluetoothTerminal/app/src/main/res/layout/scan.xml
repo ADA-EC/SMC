@@ -34,7 +34,7 @@
         android:id="@+id/scan_scan_again"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Scan again"
+        android:text="Procurar novamente"
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/scan_state" />
 </RelativeLayout>

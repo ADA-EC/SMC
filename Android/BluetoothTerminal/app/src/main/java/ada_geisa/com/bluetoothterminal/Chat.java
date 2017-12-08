@@ -30,6 +30,8 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
     private Bluetooth b;
     private EditText message;
     private Button send;
+    private Button opt1;
+    private Button opt2;
     private TextView text;
     private ScrollView scrollView;
     private boolean registered=false;
@@ -43,6 +45,8 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         message = (EditText)findViewById(R.id.message);
         send = (Button)findViewById(R.id.send);
         scrollView = (ScrollView) findViewById(R.id.scrollView);
+        opt1 = (Button)findViewById(R.id.opt1);
+        opt2 = (Button)findViewById(R.id.opt2);
 
         text.setMovementMethod(new ScrollingMovementMethod());
         send.setEnabled(false);
@@ -55,16 +59,31 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         int pos = getIntent().getExtras().getInt("pos");
         name = b.getPairedDevices().get(pos).getName();
 
-        Display("Connecting...");
+        Display("Conectando...");
         b.connectToDevice(b.getPairedDevices().get(pos));
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String msg = message.getText().toString();
+                String msg = message.getText().toString().trim();
                 message.setText("");
-                b.send(msg);
-                Display("You: "+msg);
+                String msg2 = msg + "\r";
+                b.send(msg2);
+                Display("Você: "+msg);
+            }
+        });
+
+        opt1.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                message.setText("leituraatual");
+            }
+        });
+
+        opt2.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                message.setText("mandatudo");
             }
         });
 
@@ -85,37 +104,10 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.menu_main, menu);
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.close:
-                b.removeCommunicationCallback();
-                b.disconnect();
-                Intent intent = new Intent(this, Select.class);
-                startActivity(intent);
-                finish();
-                return true;
-
-            case R.id.rate:
-                Uri uri = Uri.parse("market://details?id=" + this.getPackageName());
-                Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-                goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_NEW_DOCUMENT | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                try {
-                    startActivity(goToMarket);
-                } catch (ActivityNotFoundException e) {
-                    startActivity(new Intent(Intent.ACTION_VIEW,
-                            Uri.parse("http://play.google.com/store/apps/details?id=" + this.getPackageName())));
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     public void Display(final String s){
         this.runOnUiThread(new Runnable() {
@@ -129,7 +121,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
 
     @Override
     public void onConnect(BluetoothDevice device) {
-        Display("Connected to "+device.getName()+" - "+device.getAddress());
+        Display("Conectado à "+device.getName()+" - "+device.getAddress());
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -140,8 +132,8 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
 
     @Override
     public void onDisconnect(BluetoothDevice device, String message) {
-        Display("Disconnected!");
-        Display("Connecting again...");
+        Display("Desconectado!");
+        Display("Conectando novamente...");
         b.connectToDevice(device);
     }
 
@@ -152,13 +144,13 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
 
     @Override
     public void onError(String message) {
-        Display("Error: "+message);
+        Display("Erro: "+message);
     }
 
     @Override
     public void onConnectError(final BluetoothDevice device, String message) {
-        Display("Error: "+message);
-        Display("Trying again in 3 sec.");
+        Display("Erro: "+message);
+        Display("Tentando de novo em 3 segundos.");
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

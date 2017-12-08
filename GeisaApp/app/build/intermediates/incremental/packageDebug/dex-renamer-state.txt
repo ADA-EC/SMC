@@ -1,0 +1,7 @@
+#Fri Aug 18 18:47:51 BRT 2017
+base.0=C\:\\Users\\henri\\Desktop\\AndroidStudioProjects\\GeisaApp\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_e24b58805afa7887454b27befff75df0aad86eda
+renamed.1=classes.dex
+renamed.0=classes2.dex
+file.1=C\:\\Users\\henri\\Desktop\\AndroidStudioProjects\\GeisaApp\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_615a34a198013257f442eecf709d8dc5aea485ec\\classes.dex
+base.1=C\:\\Users\\henri\\Desktop\\AndroidStudioProjects\\GeisaApp\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_615a34a198013257f442eecf709d8dc5aea485ec
+file.0=C\:\\Users\\henri\\Desktop\\AndroidStudioProjects\\GeisaApp\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_e24b58805afa7887454b27befff75df0aad86eda\\classes.dex
