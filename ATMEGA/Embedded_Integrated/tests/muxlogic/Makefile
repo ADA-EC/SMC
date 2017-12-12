@@ -23,7 +23,7 @@
 NAME=main
 CFLAGS=-Os -DF_CPU=$(CPU_F)
 MICRO=328p
-CPU_F=16000000 #8000000
+CPU_F=2000000 #8000000
 OBJ = main.o ds3231/ds3231.o ds3231/twi.o ds3231/twi-lowlevel.o \
 LowPower/LowPower.o bluetooth/bluetooth.o adc0832/adc0832.o
 OBJCPP = SD/ff.o SD/sdmm.o

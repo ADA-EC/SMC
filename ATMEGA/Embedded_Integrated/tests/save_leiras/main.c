@@ -22,32 +22,9 @@
  * Amador M. de Souza Neto (amador.neto@usp.br)
  *
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include <avr/interrupt.h>
-#include <avr/io.h>
-#include <util/delay.h>
-#include "LowPower/LowPower.h"
-#include "ds3231/ds3231.h"
-#include "bluetooth/bluetooth.h"
-#include "SD/ff.h"
-#include "SD/integer.h"
-
-#define PORTLED PORTB
-#define PINLED  PORTB0
-#define PREPLED() DDRB |= _BV(PINLED)
-#define AcendeLED() PORTLED |= _BV(PINLED)
-#define ApagaLED() PORTLED &= ~_BV(PINLED)
-
-#define BUFFERLEITURA 200
-#define TAMANHOLINHA 100
+#include "main.h"
 
 bool bluetooth_enabled = false;
-
-int GravarMedicao(int Leira, double temperatura, uint8_t umidade, uint8_t metano);
-int LerArquivoTodoEPassarPorBluetooth(int Leira);
 
 FATFS FatFs;		// Área de trabalho do FAtFs
 FIL *fp;		// Estrutura de File
@@ -112,11 +89,14 @@ int main(void) {
     /* Pin configuration */
     DDRD &= ~_BV(DDD2); // PD2 (PCINT0 pin) is now an input
     DDRD &= ~_BV(DDD3); // PD3 (PCINT1 pin) is now an input
+    DISABLE_MUX_DDR |= _BV(DISABLE_MUX_PORT);
 
     PORTD |= _BV(PORTD2); // PD3 is now an input with pull-up enabled
     PORTD |= _BV(PORTD3); // PD3 is now an input with pull-up enabled
 
     PREPLED(); //Set PC3 as output (DEBUG LED)
+
+    adc0832_init(); //Configure ADC ports
 
     /* Interruption setup*/
     // Set INT0 to trigger on falling edge
@@ -132,8 +112,8 @@ int main(void) {
 
     /* Setup code */
 
-    // Turns off led on PC3
-    PORTC &= ~_BV(PORTC3);
+    //Disable (de)mux
+    DISABLE_MUX_PORT |= _BV(DISABLE_MUX_PORTNUM);
 
     // Interruptions must be enabled to configure RTC
 	sei();
@@ -182,15 +162,36 @@ int main(void) {
             }
             if(strcmp(comando, "mandatudo")==0){
                 bluetooth_print("mando\r\n");
+                _delay_ms(500);
+                int errcode = LerArquivoTodoEPassarPorBluetooth(0);
+                if(errcode) {
+                    char buff[100];
+                    sprintf(buff, "Err code %d\r\n", errcode);
+                    bluetooth_print(buff);
+                    _delay_ms(500);
+                }
             }
             else if(strcmp(comando, "leituraatual")==0){
-                bluetooth_print("agora\r\n");
+                double temp;// = 25.2;
+                uint8_t humidity;// = 50;
+                uint8_t methane;// = 30;
+                read_sensors(0, &temp, &humidity, &methane);
+
+                int tempInt, tempDecimal;
+                tempInt = (int) temp;
+                tempDecimal = ((int)(temp*1000))%1000;
+
+                char buffer[TAMANHOLINHA];
+                sprintf(buffer, "Temperatura: %d.%d\r\nHumidade: %u\r\nMetano: %u\r\n",
+                    tempInt, tempDecimal, humidity, methane);
+                bluetooth_print(buffer);
             }
             else {
                 bluetooth_print("erro:");
                 bluetooth_print(comando);
                 bluetooth_print("nao eh valido\r\n");
             }
+
             //bluetooth_print("Hello World!\n");
 //            debug = LerArquivoTodoEPassarPorBluetooth(0);
   //          sprintf(debugchar, "beep %d\r\n", debug);
@@ -203,13 +204,13 @@ int main(void) {
             continue;
         }
         // Read sensors
-        //double temperatura = 25.2;
-        //uint8_t umidade = 50;
-        //uint8_t metano = 30;
+        double temp;// = 25.2;
+        uint8_t humidity;// = 50;
+        uint8_t methane;// = 30;
+        read_sensors(0, &temp, &humidity, &methane);
 
-
-
-        //debug = GravarMedicao(0, temperatura, umidade, metano);
+        _delay_ms(1000); //Make sure SD module is ready
+        debug = GravarMedicao(0, temp, humidity, methane);
 
         //if(debug==-2) {
         //    AcendeLED();
@@ -307,8 +308,8 @@ int GravarMedicao(int Leira, double temperatura, uint8_t umidade, uint8_t metano
 
 //Le todo o arquivo relativo à leira referenciada e o transmite por bluetooth
 //OBS: não será responsabilidade dessa função habilitar ou desabilitar interrupções
-//Retorna  1 se der certo
-//Retorna  0 se não conseguir montar o cartão SD
+//Retorna  0 se der certo
+//Retorna  1 se não conseguir montar o cartão SD
 //Retorna -1 se o número de leira passado por argumento é inválido
 //Retorna -2 se não conseguir abrir o arquivo indicado
 int LerArquivoTodoEPassarPorBluetooth(int Leira){
@@ -325,9 +326,9 @@ int LerArquivoTodoEPassarPorBluetooth(int Leira){
 
 
 
-    // Tenta montar o cartão, se não conseguir retorna 0
+    // Tenta montar o cartão, se não conseguir retorna 1
 	if(f_mount(0, &FatFs) != FR_OK)
-		return 0;
+		return 1;
 
     // cria o ponteiro fp para referenciar o arquivo a ser aberto
     fp = (FIL *)malloc(sizeof (FIL));
@@ -373,7 +374,36 @@ int LerArquivoTodoEPassarPorBluetooth(int Leira){
 	// desmonta o cartão
         f_mount(0, &FatFs);
 
-    //Se deu tudo certo retorna 1
-    return 1;
+    //Se deu tudo certo retorna 0
+    return 0;
 
+}
+
+int read_sensors(uint8_t leira, double *temp, uint8_t *humid, uint8_t *met) {
+    DISABLE_MUX_PORT &= ~_BV(DISABLE_MUX_PORTNUM);
+
+    //Select (de)mux
+    uint8_t lsb = leira & 0x01;
+    uint8_t msb = leira & 0x02;
+    SELECT0_PORT = (lsb) ? (SELECT0_PORT | _BV(SELECT0)) : (SELECT0_PORT & ~_BV(SELECT0));
+    SELECT1_PORT = (msb) ? (SELECT1_PORT | _BV(SELECT1)) : (SELECT1_PORT & ~_BV(SELECT1));
+
+    //Read ADC
+    //*humid = adc0832_average_conv(5, 0);
+    //*met = adc0832_average_conv(5, 1);
+    //*humid = adc0832_convert(&lsb, 0);
+    //_delay_ms(200);
+    //*met = adc0832_convert(&lsb, 1);
+
+    *humid = adc0832_average_conv(10, 0);
+    _delay_ms(200);
+    *met = adc0832_average_conv(10, 1);
+
+    //Temp
+    //a fazer
+    *temp = 25.2;
+
+    DISABLE_MUX_PORT |= _BV(DISABLE_MUX_PORTNUM);
+
+    return 0;
 }

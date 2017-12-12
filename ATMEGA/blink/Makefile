@@ -1,4 +1,3 @@
-#
 # Sistema de Monitoramento de Compostagem
 #
 # Tem como proposito monitorar as leiras do grupo GEISA (USP-SC)
@@ -20,30 +19,20 @@
 #
 # Pedro V. B. Jeronymo (pedrovbj@gmail.com)
 #
-NAME=main
-CFLAGS=-Os -DF_CPU=$(CPU_F)
-MICRO=328p
+NAME=blink
+#CPU_F=8000000
 CPU_F=8000000
-OBJ = main.o ds3231/ds3231.o ds3231/twi.o ds3231/twi-lowlevel.o \
-LowPower/LowPower.o bluetooth/bluetooth.o
-OBJCPP = SD/ff.o SD/sdmm.o
 
 all: exe
-	avr-objcopy -O ihex -R .eeprom $(NAME).out $(NAME).hex
-
-exe: $(OBJ) $(OBJCPP)
-	avr-gcc -mmcu=atmega$(MICRO) $(OBJ) $(OBJCPP) -o $(NAME).out
-
-%.o: %.c
-	avr-gcc -c -o $@ $< $(CFLAGS) -std=c11 -mmcu=atmega$(MICRO)
-
-%.o: %.cpp
-	avr-gcc -c -o $@ $< $(CFLAGS) -mmcu=atmega$(MICRO)
-
+	avr-objcopy -O ihex -R .eeprom $(NAME) $(NAME).hex
+exe: obj
+	avr-gcc -mmcu=atmega328p $(NAME).o -o $(NAME)
+obj: $(NAME).c
+	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o $(NAME).o $(NAME).c
 upload: all
-	avrdude -c avrisp -p m$(MICRO) -P /dev/ttyUSB0 -b 19200 -U flash:w:$(NAME).hex
+	avrdude -c avrisp -p m328p -P /dev/ttyUSB0 -b 19200 -U flash:w:$(NAME).hex
 
 clean:
-	rm $(NAME).out
-	rm *.o
+	rm $(NAME)
+	rm $(NAME).o
 	rm $(NAME).hex

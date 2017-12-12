@@ -24,6 +24,7 @@
 #include <util/delay.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "SD/ff.h"
 #include "SD/integer.h"
 
@@ -46,14 +47,14 @@ DWORD get_fattime (void)
 int main (){
 	DDRB |= _BV(DDB0);
 
-	// reboot delay
-	_delay_ms(200);
+	//while(1) {
+		PORTB |= _BV(PORTB0);
+		_delay_ms(1000);
+		PORTB &= ~_BV(PORTB0);
+		_delay_ms(1000);
+	//}
 
-	PORTB |= _BV(PORTB0);
-	_delay_ms(1000);
-	PORTB &= ~_BV(PORTB0);
-	_delay_ms(1000);
-	
+	_delay_ms(200);
 	// inicializa o cartão
 	UINT bw;
 	f_mount(0, &FatFs);		// Monta o cartão e fornece uma area de trabalho FatFs ao modulo
@@ -65,7 +66,7 @@ int main (){
 	fp = (FIL *)malloc(sizeof (FIL));
 
 	// se o arquivo for aberto, entra na condição
-	if (f_open(fp, "file.txt", FA_WRITE | FA_CREATE_ALWAYS)==FR_OK) {	// Cria um arquivo
+	if (f_open(fp, "gravar.txt", FA_WRITE | FA_CREATE_ALWAYS)==FR_OK) {	// Cria um arquivo
 
 		char *text = "Ola, eu sou um arquivinho maroto\r\n";
 

@@ -25,7 +25,7 @@ CFLAGS=-Os -DF_CPU=$(CPU_F)
 MICRO=328p
 CPU_F=8000000
 OBJ = main.o ds3231/ds3231.o ds3231/twi.o ds3231/twi-lowlevel.o \
-LowPower/LowPower.o bluetooth/bluetooth.o
+LowPower/LowPower.o bluetooth/bluetooth.o adc0832/adc0832.o
 OBJCPP = SD/ff.o SD/sdmm.o
 
 all: exe
@@ -45,5 +45,5 @@ upload: all
 
 clean:
 	rm $(NAME).out
-	rm *.o
+	rm *.o */*.o
 	rm $(NAME).hex

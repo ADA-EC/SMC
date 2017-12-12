@@ -17,20 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Amador Marcelino de Souza Neto (amador.neto@usp.br)
- *
+ * Pedro V. B. Jeronymo (pedrovbj@gmail.com)
  */
 
 #include <avr/io.h>
 #include <util/delay.h>
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "SD/ff.h"
 #include "SD/integer.h"
-
+#include "bluetooth/bluetooth.h"
 
 FATFS FatFs;		// Área de trabalho do FAtFs
 FIL *fp;		// Estrutura de File
-
 
 DWORD get_fattime (void)
 {
@@ -43,14 +43,11 @@ DWORD get_fattime (void)
 	| ((DWORD)0 >> 1);				// Segundo 0
 }
 
-
-
 int main (){
-
-
-
     //Configura como saída
     DDRB |= _BV(DDB0) ;
+
+	bluetooth_init(38400, 0);
 
     //Define a saída da porta D6 como nível lógico alto
 	PORTB |= _BV(PORTB0) ;
@@ -64,13 +61,49 @@ int main (){
 
 	// inicializa o cartão
 	UINT bw;
-	f_mount(0, &FatFs);		// Monta o cartão e fornece uma area de trabalho FatFs ao modulo
+	FRESULT debug_mount = f_mount(0, &FatFs);		// Monta o cartão e fornece uma area de trabalho FatFs ao modulo
+
+	switch (debug_mount) {
+		case FR_OK:
+			bluetooth_print("f_mount: FR_OK\r\n");
+			_delay_ms(500);
+			break;
+		case FR_INVALID_DRIVE:
+			bluetooth_print("f_mount: FR_INVALID_DRIVE\r\n");
+			_delay_ms(500);
+			break;
+		case FR_DISK_ERR:
+			bluetooth_print("f_mount: FR_DISK_ERR\r\n");
+			_delay_ms(500);
+			break;
+		case FR_NOT_READY:
+			bluetooth_print("f_mount: FR_NOT_READY\r\n");
+			_delay_ms(500);
+			break;
+		case FR_NOT_ENABLED:
+			bluetooth_print("f_mount: FR_NOT_ENABLED\r\n");
+			_delay_ms(500);
+			break;
+		case FR_NO_FILESYSTEM:
+			bluetooth_print("f_mount: FR_NO_FILESYSTEM\r\n");
+			_delay_ms(500);
+			break;
+		default:
+			bluetooth_print("f_mount: UNKNOWN\r\n");
+			_delay_ms(500);
+			break;
+	}
 
 	// cria o ponteiro fp para referenciar o arquivo a ser aberto
 	fp = (FIL *)malloc(sizeof (FIL));
+	if (fp == NULL) {
+		bluetooth_print("ERROR: unable to malloc file pointer\r\n");
+		_delay_ms(500);
+	}
 
 	// se o arquivo for aberto, entra na condição
-	if (f_open(fp, "append.txt", FA_WRITE | FA_OPEN_ALWAYS) == FR_OK) {	// abre arquivo existente ou cria novo
+	FRESULT debug_open = f_open(fp, "append.txt", FA_WRITE | FA_OPEN_ALWAYS);
+	if (debug_open == FR_OK) {	// abre arquivo existente ou cria novo
 
 		if (f_lseek(fp, f_size(fp)) == FR_OK) { //Entra no if se conseguir posicionar o "cursor" de escrita no final do arquivo
 
@@ -80,16 +113,20 @@ int main (){
 		}
 
 		f_close(fp);// fecha o arquivo
+	} else {
+		char buff[200];
+		sprintf(buff, "f_open: Err code %d\r\n", debug_open);
+		bluetooth_print(buff);
+		_delay_ms(500);
 	}
 
 	// desmonta o cartão
 	f_mount(0, &FatFs);
 
-
-    //Define a saída da porta D6 como nível lógico alto
-	PORTB |= _BV(PORTB0) ;
-
-	while(1);
+	while(1) {
+		PORTB ^= _BV(PORTB0) ;
+		_delay_ms(500);
+	}
 
 	return 0;
 }

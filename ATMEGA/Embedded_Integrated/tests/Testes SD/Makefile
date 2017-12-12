@@ -23,9 +23,8 @@
 NAME=gravar
 CFLAGS=-Os -DF_CPU=$(CPU_F)
 MICRO=328p
-#CPU_F=8000000
-CPU_F=16000000
-OBJ = main.o bluetooth/bluetooth.o
+CPU_F=8000000
+OBJ = $(NAME).o bluetooth/bluetooth.o
 OBJCPP = SD/ff.o SD/sdmm.o
 
 all: exe
@@ -41,7 +40,7 @@ exe: $(OBJ) $(OBJCPP)
 	avr-gcc -c -o $@ $< $(CFLAGS) -mmcu=atmega$(MICRO)
 
 upload: all
-	avrdude -c avrisp -p m$(MICRO) -P /dev/ttyACM0 -b 19200 -U flash:w:$(NAME).hex
+	avrdude -c avrisp -p m$(MICRO) -P /dev/ttyUSB0 -b 19200 -U flash:w:$(NAME).hex
 
 clean:
 	rm $(NAME).out
