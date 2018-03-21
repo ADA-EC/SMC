@@ -94,7 +94,7 @@ int main(void) {
     PORTD |= _BV(PORTD2); // PD3 is now an input with pull-up enabled
     PORTD |= _BV(PORTD3); // PD3 is now an input with pull-up enabled
 
-    PREPLED(); //Set PC3 as output (DEBUG LED)
+    PREPLED(); //(DEBUG LED)
 
     adc0832_init(); //Configure ADC ports
 
