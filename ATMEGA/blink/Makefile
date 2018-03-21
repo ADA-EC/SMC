@@ -20,17 +20,19 @@
 # Pedro V. B. Jeronymo (pedrovbj@gmail.com)
 #
 NAME=blink
-#CPU_F=8000000
+PORT=/dev/ttyACM0
 CPU_F=8000000
+MICRO=328p
+
 
 all: exe
 	avr-objcopy -O ihex -R .eeprom $(NAME) $(NAME).hex
 exe: obj
-	avr-gcc -mmcu=atmega328p $(NAME).o -o $(NAME)
+	avr-gcc -mmcu=atmega$(MICRO) $(NAME).o -o $(NAME)
 obj: $(NAME).c
-	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega328p -c -o $(NAME).o $(NAME).c
+	avr-gcc -Os -DF_CPU=$(CPU_F) -mmcu=atmega$(MICRO) -c -o $(NAME).o $(NAME).c
 upload: all
-	avrdude -c avrisp -p m328p -P /dev/ttyUSB0 -b 19200 -U flash:w:$(NAME).hex
+	avrdude -c avrisp -p m$(MICRO) -P $(PORT) -b 19200 -U flash:w:$(NAME).hex
 
 clean:
 	rm $(NAME)

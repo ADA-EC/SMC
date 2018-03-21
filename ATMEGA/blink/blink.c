@@ -3,7 +3,7 @@
 #include <util/delay.h>
 
 int main() {
-    DDRB |= _BV(DDB0);
+    DDRC |= _BV(DDB0);
 
     while(1) {
         PORTB ^= _BV(PORTB0);

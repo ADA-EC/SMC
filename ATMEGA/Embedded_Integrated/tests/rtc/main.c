@@ -32,7 +32,7 @@
 // Interrupt 0 handler
 ISR (INT0_vect)
 {
-    PORTC ^= _BV(PORTC3);
+    PORTB ^= _BV(PORTB0);
 }
 
 int main(void) {
@@ -41,7 +41,7 @@ int main(void) {
 
     PORTD |= _BV(PORTD2); // PD2 is now an input with pull-up enabled
 
-    DDRC |= _BV(DDC3); //Set PC3 as output (DEBUG LED)
+    DDRB |= _BV(DDB0); //Set PB0 as output (DEBUG LED)
 
     /* Interruption setup*/
     // Set INT0 to trigger on falling edge
@@ -53,7 +53,7 @@ int main(void) {
     /* Setup code */
 
     //Turns off DEBUG LED
-    PORTC &= ~_BV(PORTC3);
+    PORTB &= ~_BV(PORTB0);
 
     //Interruptions must be enabled to configure RTC
 	sei();
@@ -62,7 +62,7 @@ int main(void) {
     rtc_set_time(0,19,07);
     rtc_SQW_enable(false);
     rtc_enable_alarm(true);
-    rtc_set_alarm(0b1110, 23, 19, 5);
+    rtc_set_alarm(0b1111, 23, 19, 5);
 
     /* Loop code */
 	while(true) {

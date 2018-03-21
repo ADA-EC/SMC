@@ -36,7 +36,7 @@ exe: $(OBJ)
 	avr-gcc -c -o $@ $< $(CFLAGS) -mmcu=atmega$(MICRO)
 
 upload: all
-	avrdude -c avrisp -p m$(MICRO) -P /dev/ttyACM0 -b 19200 -U flash:w:$(NAME).hex
+	avrdude -c avrisp -p m$(MICRO) -P /dev/ttyUSB0 -b 19200 -U flash:w:$(NAME).hex
 
 clean:
 	rm $(NAME).out

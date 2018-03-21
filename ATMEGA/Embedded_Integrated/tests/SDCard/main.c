@@ -47,7 +47,7 @@ int main (){
     //Configura como saída
     DDRB |= _BV(DDB0) ;
 
-	bluetooth_init(38400, 0);
+	bluetooth_init(38400, 1);
 
     //Define a saída da porta D6 como nível lógico alto
 	PORTB |= _BV(PORTB0) ;
