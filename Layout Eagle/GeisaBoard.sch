@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.3.2">
+<eagle version="8.7.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -5442,11 +5442,6 @@ Standard DB9 (D-Sub 9) serial connector. Can be used for CAN bus as well as RS48
 </net>
 <net name="S0" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="PD6(AIN0)"/>
-<wire x1="-43.18" y1="10.16" x2="-38.1" y2="10.16" width="0.1524" layer="91"/>
-<label x="-40.64" y="10.16" size="1.778" layer="95"/>
-</segment>
-<segment>
 <wire x1="50.8" y1="12.7" x2="55.88" y2="12.7" width="0.1524" layer="91"/>
 <label x="53.34" y="12.7" size="1.778" layer="95"/>
 <pinref part="IC1" gate="A" pin="A"/>
@@ -5456,13 +5451,13 @@ Standard DB9 (D-Sub 9) serial connector. Can be used for CAN bus as well as RS48
 <label x="53.34" y="-43.18" size="1.778" layer="95"/>
 <pinref part="IC2" gate="A" pin="A"/>
 </segment>
-</net>
-<net name="S1" class="0">
 <segment>
 <pinref part="U1" gate="G$1" pin="PD7(AIN1)"/>
 <wire x1="-43.18" y1="7.62" x2="-38.1" y2="7.62" width="0.1524" layer="91"/>
 <label x="-40.64" y="7.62" size="1.778" layer="95"/>
 </segment>
+</net>
+<net name="S1" class="0">
 <segment>
 <wire x1="50.8" y1="10.16" x2="55.88" y2="10.16" width="0.1524" layer="91"/>
 <label x="53.34" y="10.16" size="1.778" layer="95"/>
@@ -5472,6 +5467,11 @@ Standard DB9 (D-Sub 9) serial connector. Can be used for CAN bus as well as RS48
 <wire x1="55.88" y1="-45.72" x2="50.8" y2="-45.72" width="0.1524" layer="91"/>
 <label x="53.34" y="-45.72" size="1.778" layer="95"/>
 <pinref part="IC2" gate="A" pin="B"/>
+</segment>
+<segment>
+<pinref part="U1" gate="G$1" pin="PD6(AIN0)"/>
+<wire x1="-43.18" y1="10.16" x2="-38.1" y2="10.16" width="0.1524" layer="91"/>
+<label x="-40.64" y="10.16" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="GND" class="0">
