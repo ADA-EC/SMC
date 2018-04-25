@@ -5978,10 +5978,10 @@ drill 1.1 mm</description>
 <instance part="R3" gate="G$1" x="15.24" y="-43.18" rot="R90"/>
 <instance part="R9" gate="G$1" x="-109.22" y="53.34" rot="R90"/>
 <instance part="RESET" gate="G$1" x="-109.22" y="40.64"/>
-<instance part="GND6" gate="1" x="149.86" y="81.28" rot="MR0"/>
-<instance part="GND7" gate="1" x="149.86" y="43.18" rot="MR0"/>
-<instance part="GND8" gate="1" x="149.86" y="0" rot="MR0"/>
-<instance part="GND9" gate="1" x="149.86" y="-40.64" rot="MR0"/>
+<instance part="GND6" gate="1" x="127" y="81.28" rot="MR0"/>
+<instance part="GND7" gate="1" x="127" y="43.18" rot="MR0"/>
+<instance part="GND8" gate="1" x="127" y="0" rot="MR0"/>
+<instance part="GND9" gate="1" x="127" y="-40.64" rot="MR0"/>
 <instance part="SUPPLY6" gate="G$1" x="124.46" y="-22.86"/>
 <instance part="SUPPLY7" gate="G$1" x="124.46" y="17.78"/>
 <instance part="SUPPLY8" gate="G$1" x="124.46" y="60.96"/>
@@ -6131,28 +6131,28 @@ drill 1.1 mm</description>
 <pinref part="GND15" gate="1" pin="GND"/>
 </segment>
 <segment>
-<wire x1="144.78" y1="86.36" x2="149.86" y2="86.36" width="0.1524" layer="91"/>
 <pinref part="GND6" gate="1" pin="GND"/>
-<wire x1="149.86" y1="86.36" x2="149.86" y2="83.82" width="0.1524" layer="91"/>
-<pinref part="SAIDA_L0" gate="G$1" pin="9"/>
+<wire x1="127" y1="86.36" x2="127" y2="83.82" width="0.1524" layer="91"/>
+<pinref part="SAIDA_L0" gate="G$1" pin="5"/>
+<wire x1="129.54" y1="86.36" x2="127" y2="86.36" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<wire x1="144.78" y1="48.26" x2="149.86" y2="48.26" width="0.1524" layer="91"/>
 <pinref part="GND7" gate="1" pin="GND"/>
-<wire x1="149.86" y1="45.72" x2="149.86" y2="48.26" width="0.1524" layer="91"/>
-<pinref part="SAIDA_L1" gate="G$1" pin="9"/>
+<wire x1="127" y1="45.72" x2="127" y2="48.26" width="0.1524" layer="91"/>
+<pinref part="SAIDA_L1" gate="G$1" pin="5"/>
+<wire x1="129.54" y1="48.26" x2="127" y2="48.26" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<wire x1="149.86" y1="5.08" x2="144.78" y2="5.08" width="0.1524" layer="91"/>
 <pinref part="GND8" gate="1" pin="GND"/>
-<wire x1="149.86" y1="2.54" x2="149.86" y2="5.08" width="0.1524" layer="91"/>
-<pinref part="SAIDA_L2" gate="G$1" pin="9"/>
+<wire x1="127" y1="2.54" x2="127" y2="5.08" width="0.1524" layer="91"/>
+<pinref part="SAIDA_L2" gate="G$1" pin="5"/>
+<wire x1="129.54" y1="5.08" x2="127" y2="5.08" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<wire x1="149.86" y1="-35.56" x2="144.78" y2="-35.56" width="0.1524" layer="91"/>
 <pinref part="GND9" gate="1" pin="GND"/>
-<wire x1="149.86" y1="-38.1" x2="149.86" y2="-35.56" width="0.1524" layer="91"/>
-<pinref part="SAIDA_L3" gate="G$1" pin="9"/>
+<wire x1="127" y1="-38.1" x2="127" y2="-35.56" width="0.1524" layer="91"/>
+<pinref part="SAIDA_L3" gate="G$1" pin="5"/>
+<wire x1="129.54" y1="-35.56" x2="127" y2="-35.56" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND17" gate="1" pin="GND"/>
@@ -6220,13 +6220,14 @@ drill 1.1 mm</description>
 <wire x1="-91.44" y1="86.36" x2="-91.44" y2="78.74" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$12" class="0">
+<net name="RESET/" class="0">
 <segment>
 <pinref part="RESET" gate="G$1" pin="2"/>
 <pinref part="R9" gate="G$1" pin="1"/>
 <pinref part="U1" gate="G$1" pin="PC6(/RESET)"/>
 <wire x1="-91.44" y1="48.26" x2="-109.22" y2="48.26" width="0.1524" layer="91"/>
 <junction x="-109.22" y="48.26"/>
+<label x="-96.52" y="48.26" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="ATM_T_BT_R" class="0">
