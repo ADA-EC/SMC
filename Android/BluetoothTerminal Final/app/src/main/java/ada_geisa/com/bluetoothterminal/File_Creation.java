@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,7 +54,22 @@ public class File_Creation extends AppCompatActivity {
         String fileName = filename + ".csv";
 
         //Create file
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), fileName);
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Geisa Planilhas");
+
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("App", "failed to create directory");
+            }
+        }
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Geisa Planilhas/", fileName);
+        if (file.exists()) {
+            file.delete();
+        }
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //write to file
         try {

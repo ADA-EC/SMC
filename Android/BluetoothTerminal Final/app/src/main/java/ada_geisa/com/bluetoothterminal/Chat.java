@@ -1,5 +1,6 @@
 package ada_geisa.com.bluetoothterminal;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ActivityNotFoundException;
@@ -7,11 +8,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +26,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
+import ada_geisa.com.bluetoothterminal.File_Creation;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by henri on 31/08/2017.
@@ -41,6 +58,11 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
+        }
 
         text = (TextView)findViewById(R.id.text);
         message = (EditText)findViewById(R.id.message);
@@ -72,6 +94,13 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
                 String msg2 = msg + "\r";
                 b.send(msg2);
                 Display("Você: "+msg);
+                if(msg.equals("mandatudo")){
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH'h'mm'm'ss's'");
+                    Date date = new Date();
+                    Toast.makeText(Chat.this, dateFormat.format(date), Toast.LENGTH_SHORT).show();
+                    saveTextAsFile(dateFormat.format(date), "funf");
+                }
+                else;
             }
         });
 
@@ -174,6 +203,56 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
             }
         });
     }
+
+    private void saveTextAsFile(String filename, String content){
+        String fileName = filename + ".csv";
+
+        //Create file
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Geisa Planilhas");
+
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("App", "failed to create directory");
+            }
+        }
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Geisa Planilhas/", fileName);
+        if (file.exists()) {
+            file.delete();
+        }
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //write to file
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(content.getBytes());
+            fos.close();
+            Toast.makeText(this, "Salvo", Toast.LENGTH_SHORT).show();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Arquivo não encontrado", Toast.LENGTH_SHORT).show();
+        } catch (IOException e){
+            e.printStackTrace();
+            Toast.makeText(this, "Erro ao salvar", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch(requestCode){
+            case 1000:
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(this, "Permissão concedida", Toast.LENGTH_SHORT).show();
+                } else{
+                    Toast.makeText(this, "Permissão não concedida", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+        }
+    }
+
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
