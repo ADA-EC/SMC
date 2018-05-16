@@ -43,6 +43,6 @@
         android:layout_height="wrap_content"
         android:text="Dispositivo não encontrado!"
         android:layout_below="@+id/pull_to_refresh"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"/>
 
 </RelativeLayout>
