@@ -515,9 +515,53 @@ W = angled&lt;p&gt;
 <rectangle x1="-2.794" y1="-0.254" x2="-2.286" y2="0.254" layer="51"/>
 <rectangle x1="2.286" y1="-0.254" x2="2.794" y2="0.254" layer="51"/>
 </package>
+<package name="MA04-1" urn="urn:adsk.eagle:footprint:8285/1" library_version="1">
+<description>&lt;b&gt;PIN HEADER&lt;/b&gt;</description>
+<wire x1="-4.445" y1="1.27" x2="-3.175" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-3.175" y1="1.27" x2="-2.54" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="-2.54" y1="-0.635" x2="-3.175" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-2.54" y1="0.635" x2="-1.905" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-1.905" y1="1.27" x2="-0.635" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="-0.635" y1="1.27" x2="0" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="0" y1="-0.635" x2="-0.635" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-0.635" y1="-1.27" x2="-1.905" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-1.905" y1="-1.27" x2="-2.54" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="-5.08" y1="0.635" x2="-5.08" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="-4.445" y1="1.27" x2="-5.08" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="-5.08" y1="-0.635" x2="-4.445" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="-3.175" y1="-1.27" x2="-4.445" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="0" y1="0.635" x2="0.635" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="0.635" y1="1.27" x2="1.905" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="1.905" y1="1.27" x2="2.54" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="2.54" y1="-0.635" x2="1.905" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="1.905" y1="-1.27" x2="0.635" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="0.635" y1="-1.27" x2="0" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="3.175" y1="1.27" x2="4.445" y2="1.27" width="0.1524" layer="21"/>
+<wire x1="4.445" y1="1.27" x2="5.08" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="5.08" y1="0.635" x2="5.08" y2="-0.635" width="0.1524" layer="21"/>
+<wire x1="5.08" y1="-0.635" x2="4.445" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="3.175" y1="1.27" x2="2.54" y2="0.635" width="0.1524" layer="21"/>
+<wire x1="2.54" y1="-0.635" x2="3.175" y2="-1.27" width="0.1524" layer="21"/>
+<wire x1="4.445" y1="-1.27" x2="3.175" y2="-1.27" width="0.1524" layer="21"/>
+<pad name="1" x="-3.81" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="2" x="-1.27" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="3" x="1.27" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="4" x="3.81" y="0" drill="1.016" shape="long" rot="R90"/>
+<text x="-5.08" y="1.651" size="1.27" layer="25" ratio="10">&gt;NAME</text>
+<text x="-6.223" y="-0.635" size="1.27" layer="21" ratio="10">1</text>
+<text x="0.635" y="1.651" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
+<text x="5.334" y="-0.635" size="1.27" layer="21" ratio="10">4</text>
+<rectangle x1="-1.524" y1="-0.254" x2="-1.016" y2="0.254" layer="51"/>
+<rectangle x1="-4.064" y1="-0.254" x2="-3.556" y2="0.254" layer="51"/>
+<rectangle x1="1.016" y1="-0.254" x2="1.524" y2="0.254" layer="51"/>
+<rectangle x1="3.556" y1="-0.254" x2="4.064" y2="0.254" layer="51"/>
+</package>
 </packages>
 <packages3d>
 <package3d name="MA03-1" urn="urn:adsk.eagle:package:8339/1" type="box" library_version="1">
+<description>PIN HEADER</description>
+</package3d>
+<package3d name="MA04-1" urn="urn:adsk.eagle:package:8337/1" type="box" library_version="1">
 <description>PIN HEADER</description>
 </package3d>
 </packages3d>
@@ -536,6 +580,22 @@ W = angled&lt;p&gt;
 <pin name="2" x="7.62" y="0" visible="pad" length="middle" direction="pas" swaplevel="1" rot="R180"/>
 <pin name="3" x="7.62" y="2.54" visible="pad" length="middle" direction="pas" swaplevel="1" rot="R180"/>
 </symbol>
+<symbol name="MA04-1" urn="urn:adsk.eagle:symbol:8284/1" library_version="1">
+<wire x1="3.81" y1="-7.62" x2="-1.27" y2="-7.62" width="0.4064" layer="94"/>
+<wire x1="1.27" y1="0" x2="2.54" y2="0" width="0.6096" layer="94"/>
+<wire x1="1.27" y1="-2.54" x2="2.54" y2="-2.54" width="0.6096" layer="94"/>
+<wire x1="1.27" y1="-5.08" x2="2.54" y2="-5.08" width="0.6096" layer="94"/>
+<wire x1="-1.27" y1="5.08" x2="-1.27" y2="-7.62" width="0.4064" layer="94"/>
+<wire x1="3.81" y1="-7.62" x2="3.81" y2="5.08" width="0.4064" layer="94"/>
+<wire x1="-1.27" y1="5.08" x2="3.81" y2="5.08" width="0.4064" layer="94"/>
+<wire x1="1.27" y1="2.54" x2="2.54" y2="2.54" width="0.6096" layer="94"/>
+<text x="-1.27" y="-10.16" size="1.778" layer="96">&gt;VALUE</text>
+<text x="-1.27" y="5.842" size="1.778" layer="95">&gt;NAME</text>
+<pin name="1" x="7.62" y="-5.08" visible="pad" length="middle" direction="pas" swaplevel="1" rot="R180"/>
+<pin name="2" x="7.62" y="-2.54" visible="pad" length="middle" direction="pas" swaplevel="1" rot="R180"/>
+<pin name="3" x="7.62" y="0" visible="pad" length="middle" direction="pas" swaplevel="1" rot="R180"/>
+<pin name="4" x="7.62" y="2.54" visible="pad" length="middle" direction="pas" swaplevel="1" rot="R180"/>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="MA03-1" urn="urn:adsk.eagle:component:8376/1" prefix="SV" uservalue="yes" library_version="1">
@@ -552,6 +612,33 @@ W = angled&lt;p&gt;
 </connects>
 <package3dinstances>
 <package3dinstance package3d_urn="urn:adsk.eagle:package:8339/1"/>
+</package3dinstances>
+<technologies>
+<technology name="">
+<attribute name="MF" value="" constant="no"/>
+<attribute name="MPN" value="" constant="no"/>
+<attribute name="OC_FARNELL" value="unknown" constant="no"/>
+<attribute name="OC_NEWARK" value="unknown" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="MA04-1" urn="urn:adsk.eagle:component:8375/1" prefix="SV" uservalue="yes" library_version="1">
+<description>&lt;b&gt;PIN HEADER&lt;/b&gt;</description>
+<gates>
+<gate name="1" symbol="MA04-1" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="MA04-1">
+<connects>
+<connect gate="1" pin="1" pad="1"/>
+<connect gate="1" pin="2" pad="2"/>
+<connect gate="1" pin="3" pad="3"/>
+<connect gate="1" pin="4" pad="4"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:8337/1"/>
 </package3dinstances>
 <technologies>
 <technology name="">
@@ -585,7 +672,6 @@ W = angled&lt;p&gt;
 <part name="GND1" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
 <part name="GND2" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
 <part name="PINOS_METANO" library="con-lstb" library_urn="urn:adsk.eagle:library:162" deviceset="MA03-1" device="" package3d_urn="urn:adsk.eagle:package:8339/1"/>
-<part name="PINOS_UMIDADE" library="con-lstb" library_urn="urn:adsk.eagle:library:162" deviceset="MA03-1" device="" package3d_urn="urn:adsk.eagle:package:8339/1"/>
 <part name="SUPPLY3" library="SparkFun-PowerSymbols" deviceset="VCC" device=""/>
 <part name="SUPPLY4" library="SparkFun-PowerSymbols" deviceset="VCC" device=""/>
 <part name="GND3" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
@@ -594,6 +680,7 @@ W = angled&lt;p&gt;
 <part name="SUPPLY5" library="SparkFun-PowerSymbols" deviceset="VCC" device=""/>
 <part name="GND5" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
 <part name="FRAME2" library="frames" library_urn="urn:adsk.eagle:library:229" deviceset="DINA5_L" device=""/>
+<part name="SV1" library="con-lstb" library_urn="urn:adsk.eagle:library:162" deviceset="MA04-1" device="" package3d_urn="urn:adsk.eagle:package:8337/1"/>
 </parts>
 <sheets>
 <sheet>
@@ -607,15 +694,15 @@ W = angled&lt;p&gt;
 <instance part="GND1" gate="1" x="96.52" y="93.98"/>
 <instance part="GND2" gate="1" x="162.56" y="96.52"/>
 <instance part="PINOS_METANO" gate="G$1" x="48.26" y="104.14"/>
-<instance part="PINOS_UMIDADE" gate="G$1" x="48.26" y="78.74"/>
 <instance part="SUPPLY3" gate="G$1" x="68.58" y="111.76"/>
 <instance part="SUPPLY4" gate="G$1" x="68.58" y="86.36"/>
 <instance part="GND3" gate="1" x="68.58" y="96.52"/>
-<instance part="GND4" gate="1" x="68.58" y="71.12"/>
+<instance part="GND4" gate="1" x="68.58" y="68.58"/>
 <instance part="PINOS_TEMPERATURA" gate="G$1" x="48.26" y="129.54"/>
 <instance part="SUPPLY5" gate="G$1" x="68.58" y="137.16"/>
 <instance part="GND5" gate="1" x="68.58" y="121.92"/>
 <instance part="FRAME2" gate="G$1" x="22.86" y="35.56"/>
+<instance part="SV1" gate="1" x="48.26" y="78.74"/>
 </instances>
 <busses>
 </busses>
@@ -643,9 +730,9 @@ W = angled&lt;p&gt;
 <segment>
 <pinref part="SUPPLY4" gate="G$1" pin="VCC"/>
 <wire x1="68.58" y1="81.28" x2="68.58" y2="86.36" width="0.1524" layer="91"/>
-<pinref part="PINOS_UMIDADE" gate="G$1" pin="3"/>
 <wire x1="55.88" y1="81.28" x2="68.58" y2="81.28" width="0.1524" layer="91"/>
 <label x="55.88" y="81.28" size="1.778" layer="95"/>
+<pinref part="SV1" gate="1" pin="4"/>
 </segment>
 <segment>
 <pinref part="SUPPLY5" gate="G$1" pin="VCC"/>
@@ -698,9 +785,9 @@ W = angled&lt;p&gt;
 <label x="86.36" y="111.76" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="PINOS_UMIDADE" gate="G$1" pin="2"/>
-<wire x1="55.88" y1="78.74" x2="66.04" y2="78.74" width="0.1524" layer="91"/>
-<label x="55.88" y="78.74" size="1.778" layer="95"/>
+<wire x1="55.88" y1="73.66" x2="66.04" y2="73.66" width="0.1524" layer="91"/>
+<label x="55.88" y="73.66" size="1.778" layer="95"/>
+<pinref part="SV1" gate="1" pin="1"/>
 </segment>
 </net>
 <net name="ANA_METANO" class="0">
@@ -741,11 +828,11 @@ W = angled&lt;p&gt;
 <wire x1="162.56" y1="104.14" x2="167.64" y2="104.14" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="PINOS_UMIDADE" gate="G$1" pin="1"/>
-<wire x1="68.58" y1="76.2" x2="55.88" y2="76.2" width="0.1524" layer="91"/>
-<label x="55.88" y="76.2" size="1.778" layer="95"/>
+<wire x1="68.58" y1="78.74" x2="55.88" y2="78.74" width="0.1524" layer="91"/>
+<label x="55.88" y="78.74" size="1.778" layer="95"/>
 <pinref part="GND4" gate="1" pin="GND"/>
-<wire x1="68.58" y1="76.2" x2="68.58" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="68.58" y1="78.74" x2="68.58" y2="71.12" width="0.1524" layer="91"/>
+<pinref part="SV1" gate="1" pin="3"/>
 </segment>
 <segment>
 <pinref part="PINOS_METANO" gate="G$1" pin="1"/>
