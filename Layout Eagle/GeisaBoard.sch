@@ -6415,9 +6415,9 @@ USB_MICRO-B
 <parts>
 <part name="ATMEGA" library="SparkFun-IC-Microcontroller" deviceset="ATMEGA328P_PDIP" device="" value="328P"/>
 <part name="BLUETOOTH" library="diy-modules" deviceset="WIRELESS-BLUETOOTH-HC-05" device=""/>
-<part name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="0204/7" package3d_urn="urn:adsk.eagle:package:23498/1"/>
-<part name="R2" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="0204/7" package3d_urn="urn:adsk.eagle:package:23498/1"/>
-<part name="R9" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="0204/7" package3d_urn="urn:adsk.eagle:package:23498/1"/>
+<part name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="0204/7" package3d_urn="urn:adsk.eagle:package:23498/1" value="4k7"/>
+<part name="R2" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="0204/7" package3d_urn="urn:adsk.eagle:package:23498/1" value="9k1"/>
+<part name="R7" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="0204/7" package3d_urn="urn:adsk.eagle:package:23498/1" value="4k7"/>
 <part name="RESET" library="smd-special" library_urn="urn:adsk.eagle:library:362" deviceset="SWS001" device="" package3d_urn="urn:adsk.eagle:package:26467/1"/>
 <part name="GND6" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
 <part name="SUPPLY9" library="SparkFun-PowerSymbols" deviceset="VCC" device=""/>
@@ -6466,7 +6466,7 @@ USB_MICRO-B
 <instance part="BLUETOOTH" gate="G$1" x="-63.5" y="88.9"/>
 <instance part="R1" gate="G$1" x="-119.38" y="99.06" rot="R90"/>
 <instance part="R2" gate="G$1" x="-119.38" y="83.82" rot="R90"/>
-<instance part="R9" gate="G$1" x="-109.22" y="53.34" rot="R90"/>
+<instance part="R7" gate="G$1" x="-109.22" y="53.34" rot="R90"/>
 <instance part="RESET" gate="G$1" x="-109.22" y="40.64"/>
 <instance part="GND6" gate="1" x="25.4" y="7.62" rot="MR0"/>
 <instance part="SUPPLY9" gate="G$1" x="20.32" y="53.34"/>
@@ -6644,7 +6644,7 @@ USB_MICRO-B
 <net name="RESET/" class="0">
 <segment>
 <pinref part="RESET" gate="G$1" pin="2"/>
-<pinref part="R9" gate="G$1" pin="1"/>
+<pinref part="R7" gate="G$1" pin="1"/>
 <pinref part="ATMEGA" gate="G$1" pin="PC6(/RESET)"/>
 <wire x1="-91.44" y1="48.26" x2="-109.22" y2="48.26" width="0.1524" layer="91"/>
 <junction x="-109.22" y="48.26"/>
@@ -6780,7 +6780,7 @@ USB_MICRO-B
 <pinref part="SUPPLY12" gate="G$1" pin="VCC"/>
 </segment>
 <segment>
-<pinref part="R9" gate="G$1" pin="2"/>
+<pinref part="R7" gate="G$1" pin="2"/>
 <pinref part="SUPPLY13" gate="G$1" pin="VCC"/>
 <wire x1="-109.22" y1="60.96" x2="-109.22" y2="58.42" width="0.1524" layer="91"/>
 </segment>
