@@ -1,4 +1,4 @@
-package ada_geisa.com.bluetoothterminal;
+package ada_geisa.com.bluetoothterminal.utils;
 
 /**
  * Created by henri on 31/08/2017.

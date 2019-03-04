@@ -1,47 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".File_Creation"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_all_padding"
+    tools:context=".activity.FileCreationActivity"
     tools:layout_editor_absoluteY="81dp">
 
     <EditText
-        android:id="@+id/file_name"
-        android:layout_width="0dp"
+        android:id="@+id/editNomeArquivo"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginBottom="8dp"
         android:ems="10"
+        android:hint="Nome do arquivo"
         android:inputType="textPersonName"
-        android:hint="File Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/file_content"
-        android:layout_width="0dp"
+        android:id="@+id/editConteudo"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
         android:ems="10"
+        android:hint="Conteúdo"
         android:inputType="textPersonName"
-        android:hint="Content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/file_name" />
+        app:layout_constraintTop_toBottomOf="@+id/editNomeArquivo" />
 
     <Button
-        android:id="@+id/save"
-        android:layout_width="0dp"
+        android:id="@+id/buttonSalvar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="Save"
+        android:text="Salvar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/file_content" />
-</android.support.constraint.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@+id/editConteudo" />
+</LinearLayout>

@@ -1,4 +1,4 @@
-package ada_geisa.com.bluetoothterminal;
+package ada_geisa.com.bluetoothterminal.utils;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
