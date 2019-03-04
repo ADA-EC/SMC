@@ -11,14 +11,11 @@
     tools:context=".activity.ChatActivity">
 
     <TextView
-        android:id="@+id/textTerminal"
+        android:id="@+id/textTitulo"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:paddingLeft="10dip"
-        android:text="Selecione o dispositivo."
+        android:gravity="center"
+        android:text="Selecione o dispositivo"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,29 +25,25 @@
         android:id="@+id/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textTerminal"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:paddingLeft="10dip"
-        android:paddingBottom="5dip"
+        android:layout_below="@+id/textTitulo"
+        android:gravity="center"
         android:text="Você precisa estar pareado com o dispositivo para vê-lo na lista. Deslize o dedo na tela para atualizar a lista."
+        android:textAlignment="center"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textTerminal" />
+        app:layout_constraintTop_toBottomOf="@+id/textTitulo" />
 
     <ada_geisa.com.bluetoothterminal.utils.PullToRefresh
-        android:id="@+id/pull_to_refresh"
+        android:id="@+id/pullToRefresh"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/info"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/not_in_list"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSelect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/info"
-        android:layout_weight="1"
         app:layout_constraintVertical_bias="0.01999998">
 
         <ListView
@@ -61,13 +54,11 @@
     </ada_geisa.com.bluetoothterminal.utils.PullToRefresh>
 
     <Button
-        android:id="@+id/not_in_list"
+        android:id="@+id/buttonSelect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/pull_to_refresh"
+        android:layout_below="@+id/pullToRefresh"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
         android:text="Dispositivo não encontrado!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

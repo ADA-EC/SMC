@@ -1,6 +1,5 @@
 package ada_geisa.com.bluetoothterminal.activity;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -8,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,43 +26,38 @@ import ada_geisa.com.bluetoothterminal.R;
  * Created by henri on 31/08/2017.
  */
 
-/*
-infos do .csv:
-Data, Hora, Temperatura, Umidade, Metano
- */
-
-public class Select extends Activity implements PullToRefresh.OnRefreshListener {
+public class SelectActivity extends AppCompatActivity implements PullToRefresh.OnRefreshListener {
     private Bluetooth bt;
     private ListView listView;
-    private Button not_found;
+    private Button buttonSelect;
     private List<BluetoothDevice> paired;
-    private PullToRefresh pull_to_refresh;
-    private boolean registered=false;
+    private PullToRefresh pullToRefresh;
+    private boolean registered = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.select);
+        setContentView(R.layout.select_activity);
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
-        registered=true;
+        registered = true;
 
         bt = new Bluetooth(this);
         bt.enableBluetooth();
 
-        pull_to_refresh = (PullToRefresh)findViewById(R.id.pull_to_refresh);
+        pullToRefresh = (PullToRefresh)findViewById(R.id.pullToRefresh);
         listView =  (ListView)findViewById(R.id.list);
-        not_found =  (Button) findViewById(R.id.not_in_list);
+        buttonSelect =  (Button) findViewById(R.id.buttonSelect);
 
-        pull_to_refresh.setListView(listView);
-        pull_to_refresh.setOnRefreshListener(this);
-        pull_to_refresh.setSlide(500);
+        pullToRefresh.setListView(listView);
+        pullToRefresh.setOnRefreshListener(this);
+        pullToRefresh.setSlide(500);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(Select.this, ChatActivity.class);
+                Intent i = new Intent(SelectActivity.this, ChatActivity.class);
                 i.putExtra("pos", position);
                 if(registered) {
                     unregisterReceiver(mReceiver);
@@ -73,10 +68,10 @@ public class Select extends Activity implements PullToRefresh.OnRefreshListener 
             }
         });
 
-        not_found.setOnClickListener(new View.OnClickListener() {
+        buttonSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Select.this, Scan.class);
+                Intent i = new Intent(SelectActivity.this, ScanActivity.class);
                 startActivity(i);
             }
         });
@@ -103,7 +98,7 @@ public class Select extends Activity implements PullToRefresh.OnRefreshListener 
                 paired = bt.getPairedDevices();
             }
         });
-        pull_to_refresh.refreshComplete();
+        pullToRefresh.refreshComplete();
     }
 
     @Override
@@ -129,7 +124,7 @@ public class Select extends Activity implements PullToRefresh.OnRefreshListener 
 
         listView.setAdapter(adapter);
 
-        not_found.setEnabled(true);
+        buttonSelect.setEnabled(true);
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -148,7 +143,7 @@ public class Select extends Activity implements PullToRefresh.OnRefreshListener 
                                 listView.setEnabled(false);
                             }
                         });
-                        Toast.makeText(Select.this, "Turn on bluetooth", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SelectActivity.this, "Turn on bluetooth", Toast.LENGTH_LONG).show();
                         break;
                     case BluetoothAdapter.STATE_ON:
                         runOnUiThread(new Runnable() {

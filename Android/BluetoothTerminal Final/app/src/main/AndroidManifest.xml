@@ -23,16 +23,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.Scan"
+            android:name=".activity.ScanActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.Select"
+            android:name=".activity.SelectActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
 
         </activity>
-        <activity android:name=".activity.File_Creation">
+        <activity android:name=".activity.FileCreationActivity"
+            android:label="@string/criar_arquivo"
+            android:parentActivityName=".activity.ChatActivity">
 
         </activity>
     </application>

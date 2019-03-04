@@ -23,7 +23,7 @@
             android:scrollbars="vertical">
 
             <TextView
-                android:id="@+id/textTerminal"
+                android:id="@+id/textTitulo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="bottom" />
@@ -51,6 +51,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Criar arquivo" />
+
+        <Button
+            android:id="@+id/botaoLimparTela"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Limpar tela" />
+
+        <Button
+            android:id="@+id/botaoSalvarTerminal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Salvar terminal" />
 
         <Button
             android:id="@+id/botaoOpcaoLeituraAtual"

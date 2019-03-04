@@ -10,14 +10,10 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,11 +23,8 @@ import android.widget.Toast;
 
 import ada_geisa.com.bluetoothterminal.utils.Bluetooth;
 import ada_geisa.com.bluetoothterminal.R;
+import ada_geisa.com.bluetoothterminal.utils.FileUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,7 +37,7 @@ public class ChatActivity extends AppCompatActivity implements Bluetooth.Communi
     private String name;
     private Bluetooth b;
     private EditText editMensagem;
-    private Button botaoEnviar, botaoOpcaoLeituraAtual, botaoMandaTudo, botaoCriarArquivo;
+    private Button botaoEnviar, botaoOpcaoLeituraAtual, botaoMandaTudo, botaoCriarArquivo, botaoSalvarTerminal, botaoLimparTela;
     private TextView textTerminal;
     private ScrollView scrollView;
     private boolean registered = false;
@@ -59,7 +52,7 @@ public class ChatActivity extends AppCompatActivity implements Bluetooth.Communi
             requestPermissions(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
         }
 
-        textTerminal = (TextView)findViewById(R.id.textTerminal);
+        textTerminal = (TextView)findViewById(R.id.textTitulo);
         editMensagem = (EditText)findViewById(R.id.editMensagem);
 
         scrollView = (ScrollView)findViewById(R.id.scrollView);
@@ -68,9 +61,11 @@ public class ChatActivity extends AppCompatActivity implements Bluetooth.Communi
         botaoMandaTudo = (Button)findViewById(R.id.botaoMandaTudo);
         botaoEnviar = (Button)findViewById(R.id.botaoEnviar);
         botaoCriarArquivo = (Button)findViewById(R.id.botaoCriarArquivo);
+        botaoSalvarTerminal = (Button)findViewById(R.id.botaoSalvarTerminal);
+        botaoLimparTela = (Button)findViewById(R.id.botaoLimparTela);
 
         textTerminal.setMovementMethod(new ScrollingMovementMethod());
-        botaoEnviar.setEnabled(false);
+        //botaoEnviar.setEnabled(false);
 
         /*
         b = new Bluetooth(this);
@@ -92,14 +87,23 @@ public class ChatActivity extends AppCompatActivity implements Bluetooth.Communi
                 String msg = editMensagem.getText().toString().trim();
                 editMensagem.setText("");
                 String msg2 = msg + "\r";
-                b.send(msg2);
+                //b.send(msg2);
                 Display("Você: "+msg);
                 if(msg.equals("mandatudo")){
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH'h'mm'm'ss's'");
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
                     Date date = new Date();
-                    Toast.makeText(ChatActivity.this, dateFormat.format(date), Toast.LENGTH_SHORT).show();
-                    saveTextAsFile(dateFormat.format(date), "funf");
+                    //Toast.makeText(ChatActivity.this, dateFormat.format(date), Toast.LENGTH_SHORT).show();
+
+                    //Aqui que entra a feature que falta
+                    FileUtils.saveTextAsFile(dateFormat.format(date), ".csv", "funf", ChatActivity.this);
                 }
+            }
+        });
+
+        botaoLimparTela.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textTerminal.setText("");
             }
         });
 
@@ -120,8 +124,23 @@ public class ChatActivity extends AppCompatActivity implements Bluetooth.Communi
         botaoCriarArquivo.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Intent i = new Intent(ChatActivity.this, File_Creation.class);
+                Intent i = new Intent(ChatActivity.this, FileCreationActivity.class);
                 startActivity(i);
+            }
+        });
+
+        botaoSalvarTerminal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String textoCompletoTerminal = textTerminal.getText().toString();
+
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+                Date date = new Date();
+
+                if(!textoCompletoTerminal.isEmpty())
+                    FileUtils.saveTextAsFile(dateFormat.format(date), ".txt", textoCompletoTerminal, ChatActivity.this);
+                else
+                    Toast.makeText(ChatActivity.this, "Terminal vazio.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -195,42 +214,6 @@ public class ChatActivity extends AppCompatActivity implements Bluetooth.Communi
         });
     }
 
-    private void saveTextAsFile(String filename, String content){
-        String fileName = filename + ".csv";
-
-        //Create file
-        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "Geisa Planilhas");
-
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                Log.d("App", "failed to create directory");
-            }
-        }
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Geisa Planilhas/", fileName);
-        if (file.exists()) {
-            file.delete();
-        }
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //write to file
-        try {
-            FileOutputStream fos = new FileOutputStream(file);
-            fos.write(content.getBytes());
-            fos.close();
-            Toast.makeText(this, "Salvo", Toast.LENGTH_SHORT).show();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Arquivo não encontrado", Toast.LENGTH_SHORT).show();
-        } catch (IOException e){
-            e.printStackTrace();
-            Toast.makeText(this, "Erro ao salvar", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch(requestCode){
@@ -251,23 +234,16 @@ public class ChatActivity extends AppCompatActivity implements Bluetooth.Communi
 
             if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-                Intent intent1 = new Intent(ChatActivity.this, Select.class);
+                Intent i = new Intent(ChatActivity.this, SelectActivity.class);
 
                 switch (state) {
                     case BluetoothAdapter.STATE_OFF:
-                        if(registered) {
-                            unregisterReceiver(mReceiver);
-                            registered=false;
-                        }
-                        startActivity(intent1);
-                        finish();
-                        break;
                     case BluetoothAdapter.STATE_TURNING_OFF:
                         if(registered) {
                             unregisterReceiver(mReceiver);
                             registered=false;
                         }
-                        startActivity(intent1);
+                        startActivity(i);
                         finish();
                         break;
                 }

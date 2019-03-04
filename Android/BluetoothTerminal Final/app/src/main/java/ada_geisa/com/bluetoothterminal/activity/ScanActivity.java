@@ -1,9 +1,9 @@
 package ada_geisa.com.bluetoothterminal.activity;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,7 +23,7 @@ import ada_geisa.com.bluetoothterminal.R;
  * Created by henri on 31/08/2017.
  */
 
-public class Scan extends Activity implements Bluetooth.DiscoveryCallback, AdapterView.OnItemClickListener{
+public class ScanActivity extends AppCompatActivity implements Bluetooth.DiscoveryCallback, AdapterView.OnItemClickListener{
     private Bluetooth bluetooth;
     private ListView listView;
     private ArrayAdapter<String> adapter;
@@ -124,7 +124,7 @@ public class Scan extends Activity implements Bluetooth.DiscoveryCallback, Adapt
     public void onPair(BluetoothDevice device) {
         setProgressVisibility(View.INVISIBLE);
         setText("Pareado!");
-        Intent i = new Intent(Scan.this, Select.class);
+        Intent i = new Intent(ScanActivity.this, SelectActivity.class);
         startActivity(i);
         finish();
     }
