@@ -1,4 +1,4 @@
-package ada_geisa.com.bluetoothterminal;
+package ada_geisa.com.bluetoothterminal.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -18,6 +18,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import ada_geisa.com.bluetoothterminal.R;
+
 public class File_Creation extends AppCompatActivity {
 
     EditText file_name, file_content;
@@ -26,7 +28,7 @@ public class File_Creation extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_file__creation);
+        setContentView(R.layout.activity_file_creation);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {

@@ -1,4 +1,4 @@
-package ada_geisa.com.bluetoothterminal;
+package ada_geisa.com.bluetoothterminal.activity;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
@@ -14,6 +14,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ada_geisa.com.bluetoothterminal.utils.Bluetooth;
+import ada_geisa.com.bluetoothterminal.R;
 
 
 /**

@@ -8,6 +8,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -153,6 +155,12 @@ public class Bluetooth {
 
     public List<BluetoothDevice> getPairedDevices(){
         List<BluetoothDevice> devices = new ArrayList<>();
+        if(bluetoothAdapter.getBondedDevices() == null){
+            Log.d("pobremabt", "deu ruim");
+        }
+        else{
+            Log.d("pobremabt", "deu bom");
+        }
         for (BluetoothDevice blueDevice : bluetoothAdapter.getBondedDevices()) {
             devices.add(blueDevice);
         }

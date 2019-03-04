@@ -1,4 +1,4 @@
-package ada_geisa.com.bluetoothterminal;
+package ada_geisa.com.bluetoothterminal.activity;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -18,8 +18,17 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import ada_geisa.com.bluetoothterminal.utils.Bluetooth;
+import ada_geisa.com.bluetoothterminal.utils.PullToRefresh;
+import ada_geisa.com.bluetoothterminal.R;
+
 /**
  * Created by henri on 31/08/2017.
+ */
+
+/*
+infos do .csv:
+Data, Hora, Temperatura, Umidade, Metano
  */
 
 public class Select extends Activity implements PullToRefresh.OnRefreshListener {
@@ -53,7 +62,7 @@ public class Select extends Activity implements PullToRefresh.OnRefreshListener 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(Select.this, Chat.class);
+                Intent i = new Intent(Select.this, ChatActivity.class);
                 i.putExtra("pos", position);
                 if(registered) {
                     unregisterReceiver(mReceiver);
