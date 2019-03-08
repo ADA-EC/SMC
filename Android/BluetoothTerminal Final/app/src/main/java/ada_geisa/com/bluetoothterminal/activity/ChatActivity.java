@@ -27,7 +27,9 @@ import ada_geisa.com.bluetoothterminal.utils.FileUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by henri on 31/08/2017.
@@ -35,6 +37,7 @@ import java.util.Date;
 
 public class ChatActivity extends AppCompatActivity implements Bluetooth.CommunicationCallback {
     private String name;
+    private List<String> mensagemEnviada = new ArrayList<>();
     private Bluetooth b;
     private EditText editMensagem;
     private Button botaoEnviar, botaoOpcaoLeituraAtual, botaoMandaTudo, botaoCriarArquivo, botaoSalvarTerminal, botaoLimparTela;
@@ -84,19 +87,17 @@ public class ChatActivity extends AppCompatActivity implements Bluetooth.Communi
         botaoEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String msg = editMensagem.getText().toString().trim();
-                editMensagem.setText("");
-                String msg2 = msg + "\r";
-                //b.send(msg2);
-                Display("Você: "+msg);
-                if(msg.equals("mandatudo")){
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-                    Date date = new Date();
-                    //Toast.makeText(ChatActivity.this, dateFormat.format(date), Toast.LENGTH_SHORT).show();
-
-                    //Aqui que entra a feature que falta
-                    FileUtils.saveTextAsFile(dateFormat.format(date), ".csv", "funf", ChatActivity.this);
+                String pegarMensagem = editMensagem.getText().toString().trim();
+                if(!pegarMensagem.isEmpty()){
+                    mensagemEnviada.add(pegarMensagem);
+                    editMensagem.setText("");
+                    String msg2 = mensagemEnviada.get(mensagemEnviada.size()-1) + "\r";
+                    //b.send(msg2);
+                    Display("Você: "+mensagemEnviada.get(mensagemEnviada.size()-1));
                 }
+
+                //Debug do array list
+                //Toast.makeText(ChatActivity.this, mensagemEnviada.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -189,6 +190,14 @@ public class ChatActivity extends AppCompatActivity implements Bluetooth.Communi
     @Override
     public void onMessage(String message) {
         Display(name+": "+message);
+
+        //Se for mandatudo, salva o retorno
+        if(mensagemEnviada.get(0).equals("mandatudo")){
+            Thread thread = new Thread(new SalvarCSVEmThread(message));
+            thread.start();
+        }
+
+        mensagemEnviada.remove(0);
     }
 
     @Override
@@ -250,4 +259,22 @@ public class ChatActivity extends AppCompatActivity implements Bluetooth.Communi
             }
         }
     };
+
+    class SalvarCSVEmThread implements Runnable{
+
+        private String conteudo;
+
+        public SalvarCSVEmThread(String conteudo){
+            this.conteudo = conteudo;
+        }
+
+        @Override
+        public void run() {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+            Date date = new Date();
+            //Toast.makeText(ChatActivity.this, dateFormat.format(date), Toast.LENGTH_SHORT).show();
+
+            FileUtils.saveTextAsFile(dateFormat.format(date), ".csv", conteudo, ChatActivity.this);
+        }
+    }
 }
